@@ -1,0 +1,1 @@
+This folder will contains constant declaration such as day format : "DD/MM/YY" 
