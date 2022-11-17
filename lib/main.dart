@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mobile_proj/screens/math_domain/math_game_1.dart';
+import 'package:mobile_proj/screens/math_domain/math_game_one.dart';
 
 void main() {
   runApp(const MyApp());

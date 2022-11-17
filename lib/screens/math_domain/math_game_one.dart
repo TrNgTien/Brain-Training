@@ -18,7 +18,7 @@ class _MathGameState extends State<MathGame> {
   int _currentPlace = 0;
   int _point = 0;
   int _numOfCorrect = 0;
-  String gameRules =
+  String GAME_RULES =
       "Người chơi chọn vào phép tính có kết quả bé nhất\nThời gian: 60 giây\nTrả lời đúng 5 câu liên tiếp -> cộng thêm 10s\nSai: -2s/ đáp án\nSố điểm cho từng round đã được để trong excel\nTổng điểm = Tổng điểm mỗi round";
 
   Future<void> readJson() async {
