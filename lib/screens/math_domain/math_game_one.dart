@@ -12,18 +12,18 @@ class MathGame extends StatefulWidget {
 }
 
 class _MathGameState extends State<MathGame> {
+  String mathGamePath = "lib/constants/math_game.json";
   Timer? countdownTimer;
   Duration myDuration = const Duration(seconds: 60);
   List _items = [];
   int _currentPlace = 0;
   int _point = 0;
   int _numOfCorrect = 0;
-  String GAME_RULES =
+  String gameRules =
       "Người chơi chọn vào phép tính có kết quả bé nhất\nThời gian: 60 giây\nTrả lời đúng 5 câu liên tiếp -> cộng thêm 10s\nSai: -2s/ đáp án\nSố điểm cho từng round đã được để trong excel\nTổng điểm = Tổng điểm mỗi round";
 
   Future<void> readJson() async {
-    final String response =
-        await rootBundle.loadString('assets/math_game.json');
+    final String response = await rootBundle.loadString(mathGamePath);
     final data = await json.decode(response);
     setState(() {
       _currentPlace = data["currentPlace"];
