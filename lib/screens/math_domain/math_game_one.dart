@@ -14,7 +14,7 @@ class MathGame extends StatefulWidget {
 class _MathGameState extends State<MathGame> {
   String mathGamePath = "lib/constants/math_game.json";
   Timer? countdownTimer;
-  Duration myDuration = const Duration(seconds: 60);
+Duration myDuration = const Duration(seconds: 59);
   List _items = [];
   int _currentPlace = 0;
   int _point = 0;
