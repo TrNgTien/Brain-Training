@@ -39,7 +39,7 @@ Duration myDuration = const Duration(seconds: 59);
     });
   }
 
-  void handleOnclickAns(String selected) {
+  void handleClickAns(String selected) {
     handleAns(selected);
 
     updateCurrentPlace();
