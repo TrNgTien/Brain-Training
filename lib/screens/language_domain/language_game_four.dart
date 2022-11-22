@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:characters/characters.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +10,7 @@ extension Shuffle on String {
 
 enum ButtonType { question, answer, solution }
 
-enum GameStatus { playing, checking }
+enum GameStatus { playing, checking, end }
 
 class LanguageGameFour extends StatefulWidget {
   const LanguageGameFour({Key? key}) : super(key: key);
@@ -22,7 +21,7 @@ class LanguageGameFour extends StatefulWidget {
 
 class _LanguageGameFourState extends State<LanguageGameFour> {
   final String languageGameFourPath = "lib/constants/language_game.json";
-  Duration questionDuration = const Duration(seconds: 20);
+  Duration questionDuration = const Duration();
   Timer? countdownTimer;
 
   List _wordsList = [];
@@ -30,9 +29,13 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   List<String> _answerWord = [];
   List<int> _answerIndex = [];
   List<String> _solutionWord = [];
+
   int _currentAnswerPosition = 0;
   int _currentQuestion = 0;
+
   int _point = 0;
+  int _bonusPoint = 0;
+  int _responseTime = 0;
   GameStatus _status = GameStatus.playing;
 
   Future<List> readJson() async {
@@ -43,13 +46,26 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   }
 
   // Question handler
+  void updateSession() {
+    changeQuestionWord();
+    changeSolutionWord();
+    resetAnswer();
+    startTimer();
+  }
+
   void nextQuestion() {
     if (_currentQuestion >= _wordsList.length - 1) return;
 
     increaseQuestionNumber();
-    changeQuestionWord();
-    changeSolutionWord();
-    resetAnswer();
+    updateSession();
+  }
+
+  void calculateBonusPoints() {
+    double averageResponseTime = _responseTime / 10;
+    double bonusPoints = _point / averageResponseTime;
+    setState(() {
+      _bonusPoint = bonusPoints.toInt();
+    });
   }
 
   void increaseQuestionNumber() {
@@ -88,6 +104,10 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
     checkAnswer();
   }
 
+  void handleClickNext() {
+    nextQuestion();
+  }
+
   void selectAnswer(String char, int index) {
     setState(() {
       _answerWord[_currentAnswerPosition] = char;
@@ -105,27 +125,30 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
       _answerWord[index] = "";
       _answerIndex[index] = -1;
 
-      if (index < _currentAnswerPosition) {
+      if (index < _currentAnswerPosition || _currentAnswerPosition == -1) {
         _currentAnswerPosition = index;
       }
     });
   }
 
   void checkAnswer() {
-    print(_solutionWord);
-    print(_answerWord);
-
     if (listEquals(_solutionWord, _answerWord)) {
-      print("Correct");
       setState(() {
-        _point += 20;
+        _point += 200;
       });
     }
-    ;
   }
 
   void changeStatus(GameStatus status) {
-    if (status == GameStatus.checking) setCancelTimer();
+    if (status == GameStatus.checking) {
+      setCancelTimer();
+    } else if (status == GameStatus.end) {
+      setCancelTimer();
+      calculateBonusPoints();
+      _showMyDialog("Kết thúc", () {
+        Navigator.of(context).pop();
+      });
+    }
 
     setState(() {
       _status = status;
@@ -134,6 +157,9 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
   // Timer Handler
   void startTimer() {
+    questionDuration = const Duration(seconds: 20);
+    changeStatus(GameStatus.playing);
+
     countdownTimer =
         Timer.periodic(const Duration(seconds: 1), (_) => setCountDown());
   }
@@ -143,7 +169,9 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
     setState(() {
       final seconds = questionDuration.inSeconds - reduceSecondsBy;
       if (seconds < 0) {
-        setCancelTimer();
+        changeStatus(GameStatus.checking);
+      } else if (seconds < 0 && _currentQuestion >= _wordsList.length - 1) {
+        changeStatus(GameStatus.end);
       } else {
         questionDuration = Duration(seconds: seconds);
       }
@@ -153,9 +181,8 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   void setCancelTimer() {
     countdownTimer!.cancel();
     setState(() {
-      _status = GameStatus.checking;
+      _responseTime += questionDuration.inSeconds;
     });
-    print("Time's up");
   }
 
   @override
@@ -165,13 +192,10 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
       // Shuffle the questions list
       wordsList.shuffle();
       setState(() {
-        _wordsList = wordsList;
+        _wordsList = wordsList.sublist(0, 9);
       });
 
-      changeQuestionWord();
-      changeSolutionWord();
-      resetAnswer();
-      startTimer();
+      updateSession();
     });
   }
 
@@ -239,11 +263,23 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
             height: 20,
           ),
           ElevatedButton(
-            onPressed: () => {handleClickCheck()},
+            onPressed:
+                (!_answerWord.contains("") && _status == GameStatus.playing)
+                    ? () => handleClickCheck()
+                    : null,
             child: const Text("Kiểm tra", style: TextStyle(fontSize: 24)),
           )
         ])),
       ),
+      floatingActionButton: _currentQuestion < _wordsList.length - 1
+          ? FloatingActionButton.extended(
+              onPressed: _status == GameStatus.checking
+                  ? () => handleClickNext()
+                  : null,
+              icon: const Icon(Icons.navigate_next),
+              label: Text("Bài tập ${_currentQuestion + 2}"),
+            )
+          : null,
     );
   }
 
@@ -281,5 +317,34 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
                   }
                 },
                 child: Text(char, style: const TextStyle(fontSize: 30)))));
+  }
+
+  Future<void> _showMyDialog(String title, Function callback) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("Điểm: $_point"),
+                Text("Điểm thưởng: $_bonusPoint"),
+                Text("Thời gian trả lời: $_responseTime giây"),
+                Text("Tổng điểm: ${_point + _bonusPoint}"),
+              ],
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Xác nhận'),
+              onPressed: () => callback(),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
