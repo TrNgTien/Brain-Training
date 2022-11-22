@@ -32,6 +32,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
   int _currentAnswerPosition = 0;
   int _currentQuestion = 0;
+  bool _isCorrect = false;
 
   int _point = 0;
   int _bonusPoint = 0;
@@ -91,6 +92,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   void resetAnswer() {
     int listLength = _wordsList[_currentQuestion]["question"].toString().length;
     setState(() {
+      _isCorrect = false;
       _answerWord = List.filled(listLength, "");
       _answerIndex = List.filled(listLength, -1);
       _currentAnswerPosition = 0;
@@ -134,6 +136,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   void checkAnswer() {
     if (listEquals(_solutionWord, _answerWord)) {
       setState(() {
+        _isCorrect = true;
         _point += 200;
       });
     }
@@ -287,34 +290,59 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
     return Column(children: [
       Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: wordList
-              .asMap()
-              .entries
-              .map((entry) => buttonCharacter(entry.key, entry.value, type))
-              .toList()),
+          children: wordList.asMap().entries.map((entry) {
+            switch (type) {
+              case ButtonType.question:
+                return questionWidget(entry.key, entry.value);
+              case ButtonType.answer:
+                return answerWidget(entry.key, entry.value);
+              case ButtonType.solution:
+                return solutionWidget(entry.key, entry.value);
+            }
+          }).toList()),
     ]);
   }
 
-  Expanded buttonCharacter(int index, String char, ButtonType type) {
+  Expanded questionWidget(int index, String char) {
+    return wordWidget(char, ElevatedButton.styleFrom(), () {
+      selectAnswer(char, index);
+    });
+  }
+
+  Expanded answerWidget(int index, String char) {
+    ButtonStyle btnStyle() {
+      if (_status == GameStatus.playing) {
+        return ElevatedButton.styleFrom();
+      } else if (_isCorrect) {
+        return ElevatedButton.styleFrom(backgroundColor: Colors.green);
+      }
+      return ElevatedButton.styleFrom(backgroundColor: Colors.red);
+    }
+
+    return wordWidget(char, btnStyle(), () {
+      deleteAnswer(char, index);
+    });
+  }
+
+  Expanded solutionWidget(int index, String char) {
+    return wordWidget(
+        char, ElevatedButton.styleFrom(backgroundColor: Colors.green), () {});
+  }
+
+  Expanded wordWidget(
+      String char, ButtonStyle buttonStyle, Function onPressedCallback) {
     return Expanded(
         child: Container(
             margin: const EdgeInsets.all(4),
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    fixedSize: const Size.fromHeight(70)),
+                  padding: const EdgeInsets.all(0),
+                  fixedSize: const Size.fromHeight(70),
+                ).merge(buttonStyle),
                 onPressed: () {
                   if (_status == GameStatus.checking) return;
                   if (char == "") return;
-                  switch (type) {
-                    case ButtonType.question:
-                      selectAnswer(char, index);
-                      break;
-                    case ButtonType.answer:
-                      deleteAnswer(char, index);
-                      break;
-                    default:
-                      break;
-                  }
+                  onPressedCallback();
                 },
                 child: Text(char, style: const TextStyle(fontSize: 30)))));
   }
