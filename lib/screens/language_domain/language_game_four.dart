@@ -1,16 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-extension Shuffle on String {
-  String get shuffled => (characters.toList()..shuffle()).join('');
-}
-
-enum ButtonType { question, answer, solution }
-
-enum GameStatus { playing, checking, end }
+import 'utils.dart';
+import 'enum.dart';
 
 class LanguageGameFour extends StatefulWidget {
   const LanguageGameFour({Key? key}) : super(key: key);
@@ -21,6 +13,10 @@ class LanguageGameFour extends StatefulWidget {
 
 class _LanguageGameFourState extends State<LanguageGameFour> {
   final String languageGameFourPath = "lib/constants/language_game.json";
+  final String jsonKey = "languageGame4";
+  final int questionDurationInSecond = 60;
+  final int numberOfQuestions = 10;
+
   Duration questionDuration = const Duration();
   Timer? countdownTimer;
 
@@ -39,13 +35,6 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   int _responseTime = 0;
   GameStatus _status = GameStatus.playing;
 
-  Future<List> readJson() async {
-    final String response = await rootBundle.loadString(languageGameFourPath);
-    final data = await json.decode(response);
-
-    return data["languageGame4"];
-  }
-
   // Question handler
   void updateSession() {
     changeQuestionWord();
@@ -62,7 +51,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   }
 
   void calculateBonusPoints() {
-    double averageResponseTime = _responseTime / 10;
+    double averageResponseTime = _responseTime / numberOfQuestions;
     double bonusPoints = _point / averageResponseTime;
     setState(() {
       _bonusPoint = bonusPoints.toInt();
@@ -142,25 +131,45 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
     }
   }
 
+  void userFinishQuestion() {
+    setCancelTimer();
+    updateUserResponseTime();
+  }
+
+  void updateUserResponseTime() {
+    setState(() {
+      _responseTime += (questionDurationInSecond - questionDuration.inSeconds);
+    });
+  }
+
   void changeStatus(GameStatus status) {
-    if (status == GameStatus.checking) {
-      setCancelTimer();
-    } else if (status == GameStatus.end) {
-      setCancelTimer();
-      calculateBonusPoints();
-      _showMyDialog("Kết thúc", () {
-        Navigator.of(context).pop();
-      });
-    }
+    handleStatusChange(status);
 
     setState(() {
       _status = status;
     });
   }
 
+  void handleStatusChange(GameStatus status) {
+    switch (status) {
+      case GameStatus.checking:
+        userFinishQuestion();
+        break;
+      case GameStatus.end:
+        userFinishQuestion();
+        calculateBonusPoints();
+        _showMyDialog("Kết thúc", () {
+          Navigator.of(context).pop();
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
   // Timer Handler
   void startTimer() {
-    questionDuration = const Duration(seconds: 20);
+    questionDuration = Duration(seconds: questionDurationInSecond);
     changeStatus(GameStatus.playing);
 
     countdownTimer =
@@ -171,10 +180,10 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
     const reduceSecondsBy = 1;
     setState(() {
       final seconds = questionDuration.inSeconds - reduceSecondsBy;
-      if (seconds < 0) {
-        changeStatus(GameStatus.checking);
-      } else if (seconds < 0 && _currentQuestion >= _wordsList.length - 1) {
+      if (seconds < 0 && _currentQuestion >= _wordsList.length - 1) {
         changeStatus(GameStatus.end);
+      } else if (seconds < 0) {
+        changeStatus(GameStatus.checking);
       } else {
         questionDuration = Duration(seconds: seconds);
       }
@@ -183,19 +192,16 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
   void setCancelTimer() {
     countdownTimer!.cancel();
-    setState(() {
-      _responseTime += questionDuration.inSeconds;
-    });
   }
 
   @override
   void initState() {
     super.initState();
-    readJson().then((wordsList) {
+    readJson(languageGameFourPath, jsonKey).then((wordsList) {
       // Shuffle the questions list
       wordsList.shuffle();
       setState(() {
-        _wordsList = wordsList.sublist(0, 9);
+        _wordsList = wordsList.sublist(0, numberOfQuestions);
       });
 
       updateSession();
@@ -205,7 +211,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   @override
   void dispose() {
     super.dispose();
-    countdownTimer!.cancel();
+    setCancelTimer();
   }
 
   @override
