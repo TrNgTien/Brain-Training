@@ -14,7 +14,7 @@ class MathGame extends StatefulWidget {
 class _MathGameState extends State<MathGame> {
   String mathGamePath = "lib/constants/math_game.json";
   Timer? countdownTimer;
-  Duration myDuration = const Duration(seconds: 60);
+  Duration myDuration = const Duration(seconds: 59);
   List _items = [];
   int _currentPlace = 0;
   int _point = 0;
@@ -39,7 +39,7 @@ class _MathGameState extends State<MathGame> {
     });
   }
 
-  void handleOnclickAns(String selected) {
+  void handleClickAns(String selected) {
     handleAns(selected);
 
     updateCurrentPlace();
@@ -178,7 +178,7 @@ class _MathGameState extends State<MathGame> {
       child: ElevatedButton(
           style:
               ElevatedButton.styleFrom(fixedSize: const Size.fromHeight(150)),
-          onPressed: () => handleOnclickAns(ansSide),
+          onPressed: () => handleClickAns(ansSide),
           child: Text(
             _items[_currentPlace][ansSide],
             style: const TextStyle(fontSize: 19),

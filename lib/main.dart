@@ -1,7 +1,9 @@
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_proj/screens/math_domain/math_game_one.dart';
+import 'package:mobile_proj/screens/language_domain/language_game_four.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,6 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       builder: (BuildContext context) => const MathGame()));
                 },
                 child: const Text("Math game 1")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const LanguageGameFour()));
+                },
+                child: const Text("Language game 4")),
             const Text(
               'You have pushed the button this many times:',
             ),
