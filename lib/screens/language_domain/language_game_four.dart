@@ -205,6 +205,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   @override
   void dispose() {
     super.dispose();
+    countdownTimer!.cancel();
   }
 
   @override
@@ -213,7 +214,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Language Game Four'),
+        title: const Text("Sắp xếp chữ cái"),
       ),
       body: SingleChildScrollView(
         child: Center(
