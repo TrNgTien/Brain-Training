@@ -311,33 +311,35 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   }
 
   Expanded questionWidget(int index, String char) {
-    return wordWidget(char, ElevatedButton.styleFrom(), () {
+    return wordWidget(char, onPressedCallback: () {
       selectAnswer(char, index);
     });
   }
 
-  Expanded answerWidget(int index, String char) {
-    ButtonStyle btnStyle() {
-      if (_status == GameStatus.playing) {
-        return ElevatedButton.styleFrom();
-      } else if (_isCorrect) {
-        return ElevatedButton.styleFrom(backgroundColor: Colors.green);
-      }
-      return ElevatedButton.styleFrom(backgroundColor: Colors.red);
+  // Handle logic for answer button's style
+  ButtonStyle? getAnswerBtnStyle() {
+    if (_status == GameStatus.playing) {
+      return null;
+    } else if (_isCorrect) {
+      return ElevatedButton.styleFrom(backgroundColor: Colors.green);
     }
+    return ElevatedButton.styleFrom(backgroundColor: Colors.red);
+  }
 
-    return wordWidget(char, btnStyle(), () {
+  Expanded answerWidget(int index, String char) {
+    return wordWidget(char, buttonStyle: getAnswerBtnStyle(),
+        onPressedCallback: () {
       deleteAnswer(char, index);
     });
   }
 
   Expanded solutionWidget(int index, String char) {
-    return wordWidget(
-        char, ElevatedButton.styleFrom(backgroundColor: Colors.green), () {});
+    return wordWidget(char,
+        buttonStyle: ElevatedButton.styleFrom(backgroundColor: Colors.green));
   }
 
-  Expanded wordWidget(
-      String char, ButtonStyle buttonStyle, Function onPressedCallback) {
+  Expanded wordWidget(String char,
+      {ButtonStyle? buttonStyle, Function? onPressedCallback}) {
     return Expanded(
         child: Container(
             margin: const EdgeInsets.all(4),
@@ -349,7 +351,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
                 onPressed: () {
                   if (_status == GameStatus.checking) return;
                   if (char == "") return;
-                  onPressedCallback();
+                  onPressedCallback!();
                 },
                 child: Text(char, style: const TextStyle(fontSize: 30)))));
   }
