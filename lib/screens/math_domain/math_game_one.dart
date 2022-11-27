@@ -191,27 +191,24 @@ class _MathGameState extends State<MathGame> {
   Future<void> _showMyDialog(
       String title, String content, Function callback) async {
     return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(content),
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(title),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(content),
+                  ],
+                ),
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Xác nhận'),
+                  onPressed: () => callback(),
+                ),
               ],
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Xác nhận'),
-              onPressed: () => callback(),
-            ),
-          ],
-        );
-      },
-    );
+            ));
   }
 }

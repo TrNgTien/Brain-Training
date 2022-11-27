@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:mobile_proj/utils/helper.dart';
 
 class Game2 extends StatefulWidget {
   const Game2({super.key});
@@ -27,6 +25,8 @@ class _Game2State extends State<Game2> {
   int currentIndexing = 0;
   int amountOfCorrectAnswers = 0;
   int indexClicked = 0;
+  int conditionPassLevel = 0;
+  num totalScore = 0;
   @override
   void initState() {
     super.initState();
@@ -37,7 +37,10 @@ class _Game2State extends State<Game2> {
   @override
   void dispose() {
     super.dispose();
-    setCancelTimer();
+    countdownTimer!.cancel();
+    currentIndexing = 0;
+    currentRound = 1;
+    amountOfCorrectAnswers = 0;
   }
 
   void startTimer() {
@@ -46,50 +49,107 @@ class _Game2State extends State<Game2> {
   }
 
   void stopTimer() {
-    setState(() => countdownTimer!.cancel());
+    () => countdownTimer!.cancel();
+  }
+
+  num calculateScore() {
+    dynamic totalTimeOfLevel = currentGridData.reduce((value, element) {
+      return {
+        "duration": value["duration"] + element["duration"],
+      };
+    });
+    num duration = totalTimeOfLevel["duration"];
+    num averageTime = duration / currentGridData.length;
+    num bonusScore = currentScore / averageTime;
+    num totalScoreDouble = currentScore + bonusScore;
+    totalScore = totalScoreDouble.round();
+    return totalScore;
   }
 
   void setCancelTimer() {
+    int timer = currentGridData[0]["duration"] - 1;
+    calculateScore();
     countdownTimer!.cancel();
+    _showMyDialog(
+        "Kết thúc",
+        "Số vòng chơi vượt qua: $amountOfCorrectAnswers / ${currentGridData.length}",
+        "Tổng điểm: $totalScore", () {
+      Navigator.of(context).pop();
+      setState(() {
+        currentIndexing = 0;
+        currentRound = 1;
+        currentScore = 0;
+        timerCounter = Duration(seconds: timer);
+        clickedOptions = [];
+      });
+      startTimer();
+    });
   }
 
   void setCountDown() {
     const reduceSecondsBy = 1;
-    print("currentIndexing: $currentIndexing");
-
     setState(() {
       final seconds = timerCounter.inSeconds - reduceSecondsBy;
+      int timer = currentGridData[currentIndexing]["duration"] - 1;
       if (seconds < 0) {
-        int timer = currentGridData[currentIndexing]["duration"] - 1;
         if (currentIndexing < currentGridData.length - 1) {
           currentIndexing++;
           currentRound++;
-          stopTimer();
-        } else if (currentIndexing == currentGridData.length - 1 &&
-            currentMultipleType == 1 &&
-            amountOfCorrectAnswers >= 14) {
-          setState(() {
-            currentIndexing = 0;
-            currentRound = 1;
-            currentMultipleType = 2;
-            timerCounter = Duration(seconds: timer);
-            currentGridData = gridDataHundred;
-          });
-        } else if (currentIndexing == currentGridData.length - 1 &&
-            currentMultipleType == 2 &&
-            amountOfCorrectAnswers >= 18) {
-          setState(() {
-            currentIndexing = 0;
-            currentRound = 1;
-            currentMultipleType = 3;
-            timerCounter = Duration(seconds: timer);
-            currentGridData = gridDataThousand;
-          });
+          timerCounter = Duration(seconds: timer);
+        } else if (currentIndexing == currentGridData.length - 1) {
+          if (currentMultipleType == 1 && amountOfCorrectAnswers >= 14) {
+            setState(() {
+              currentIndexing = 0;
+              currentRound = 1;
+              currentMultipleType = 2;
+              amountOfCorrectAnswers = 0;
+              clickedOptions = [];
+              timerCounter = Duration(seconds: timer);
+              currentGridData = gridDataHundred;
+            });
+          } else if (currentMultipleType == 2 && amountOfCorrectAnswers >= 18) {
+            setState(() {
+              currentIndexing = 0;
+              currentRound = 1;
+              currentMultipleType = 3;
+              amountOfCorrectAnswers = 0;
+              clickedOptions = [];
+              timerCounter = Duration(seconds: timer);
+              currentGridData = gridDataThousand;
+            });
+          } else {
+            setCancelTimer();
+          }
         }
       } else {
         timerCounter = Duration(seconds: seconds);
       }
     });
+  }
+
+  Future<void> _showMyDialog(String title, String content, String totalScore,
+      Function callback) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(title),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(content),
+                    Text(totalScore),
+                  ],
+                ),
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Chơi lại'),
+                  onPressed: () => callback(),
+                ),
+              ],
+            ));
   }
 
   Future<void> readJson() async {
@@ -103,12 +163,22 @@ class _Game2State extends State<Game2> {
     });
   }
 
+  String gameType() {
+    if (currentMultipleType == 1) {
+      return "10";
+    } else if (currentMultipleType == 2) {
+      return "100";
+    } else {
+      return "1000";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final seconds = timerCounter.inSeconds;
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Tìm tổng 2 số'),
+          title: Text('Tìm tổng 2 số có tổng là ${gameType()}'),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -142,29 +212,30 @@ class _Game2State extends State<Game2> {
   GridView gridOptions(List gridData) {
     void validateAnswer(String typeValidate) {
       int timer = gridData[currentIndexing]["duration"] - 1;
+      int gridDataLength = gridData.length;
+      int conditionPassLevelTen = 14;
+      int conditionPassLevelHundred = 18;
       if (typeValidate == "ten") {
-        if (currentIndexing == gridData.length &&
-            amountOfCorrectAnswers >= 14) {
+        if (currentIndexing == gridData.length - 1 &&
+            amountOfCorrectAnswers >= conditionPassLevelTen) {
           setState(() {
             currentIndexing = 0;
             currentRound = 1;
+            amountOfCorrectAnswers = 0;
             clickedOptions = [];
             currentGridData = gridDataHundred;
+            timerCounter = Duration(seconds: timer);
           });
-        } else if (currentIndexing == gridData.length) {
-          setState(() {
-            currentIndexing = 0;
-            currentRound = 1;
-            clickedOptions = [];
-            currentGridData = gridDataHundred;
-          });
+        } else if (currentIndexing == gridDataLength - 1 &&
+            amountOfCorrectAnswers < conditionPassLevelTen) {
+          setCancelTimer();
         } else {
           if (clickedOptions[0] + clickedOptions[1] == 10) {
             setState(() {
               currentIndexing++;
               currentRound++;
-              currentScore += gridData[currentIndexing]["points"];
               amountOfCorrectAnswers++;
+              currentScore += gridData[currentIndexing]["points"];
               timerCounter = Duration(seconds: timer);
               clickedOptions = [];
             });
@@ -178,14 +249,19 @@ class _Game2State extends State<Game2> {
           }
         }
       } else if (typeValidate == "hundred") {
-        if (currentIndexing == gridData.length &&
-            amountOfCorrectAnswers >= 18) {
+        if (currentIndexing == gridDataLength - 1 &&
+            amountOfCorrectAnswers >= conditionPassLevelHundred) {
           setState(() {
             currentIndexing = 0;
             currentRound = 1;
+            amountOfCorrectAnswers = 0;
             clickedOptions = [];
             currentGridData = gridDataThousand;
+            timerCounter = Duration(seconds: timer);
           });
+        } else if (currentIndexing == gridDataLength - 1 &&
+            amountOfCorrectAnswers < conditionPassLevelHundred) {
+          setCancelTimer();
         } else {
           if (clickedOptions[0] + clickedOptions[1] == 100) {
             setState(() {
@@ -206,18 +282,34 @@ class _Game2State extends State<Game2> {
           }
         }
       } else {
-        if (currentIndexing == gridData.length - 1) {
+        if (currentIndexing == gridDataLength - 1) {
           setState(() {
             currentIndexing = 0;
             currentRound = 1;
+            amountOfCorrectAnswers = 0;
             clickedOptions = [];
-            stopTimer();
+          });
+          calculateScore();
+          _showMyDialog(
+              "Kết thúc",
+              "Số vòng chơi vượt qua: $amountOfCorrectAnswers / ${currentGridData.length}",
+              "Tổng điểm của vòng chơi: $totalScore", () {
+            Navigator.of(context).pop();
+            setState(() {
+              currentIndexing = 0;
+              currentRound = 1;
+              currentGridData = gridDataThousand;
+              timerCounter = Duration(seconds: timer);
+              clickedOptions = [];
+            });
+            startTimer();
           });
         } else {
           if (clickedOptions[0] + clickedOptions[1] == 1000) {
             setState(() {
               currentIndexing++;
               currentRound++;
+              amountOfCorrectAnswers++;
               currentScore += gridData[currentIndexing]["points"];
               timerCounter = Duration(seconds: timer);
               clickedOptions = [];
