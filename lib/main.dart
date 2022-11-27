@@ -72,13 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           const LanguageGameFour()));
                 },
                 child: const Text("Language game 4")),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
           ],
         ),
       ),

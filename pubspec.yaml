@@ -65,7 +65,6 @@ flutter:
   assets:
     - lib/constants/math_game.json
     - lib/constants/language_game.json
-    - lib/constants/mock-data.json
     - lib/constants/math-game-2.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
