@@ -128,7 +128,9 @@ class _MathGameState extends State<MathGame> {
   Widget build(BuildContext context) {
     final seconds = myDuration.inSeconds;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Chọn số nhỏ hơn'),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
