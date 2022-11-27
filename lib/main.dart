@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_proj/screens/math_domain/math_game_one.dart';
 import 'package:mobile_proj/screens/language_domain/language_game_four.dart';
+import 'package:mobile_proj/screens/math_domain/game_2.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,6 +62,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => const Game2()));
+                },
+                child: const Text("Math game 2")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) =>
                           const LanguageGameFour()));
                 },
@@ -74,11 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
