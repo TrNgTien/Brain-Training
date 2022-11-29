@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -12,12 +13,17 @@ class LanguageGameThree extends StatefulWidget {
 }
 
 class _LanguageGameThreeState extends State<LanguageGameThree> {
+  final String url = Platform.isAndroid
+      ? 'http://192.168.1.2:8080/api/language'
+      : 'http://localhost:8080/api/language';
   final int answerDurationInSeconds = 60;
   Duration answerDuration = const Duration();
   Timer? countdownTimer;
-  int _point = 0;
 
+  TextEditingController controller = TextEditingController();
   late Future<String> firstCharacter;
+  List<String> _answer = [];
+  int _point = 0;
 
   // Timer Handler
   void startTimer() {
@@ -45,14 +51,42 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   // Fetch Data
   Future<String> fetchRandomCharacter() async {
-    final response =
-        await http.get(Uri.parse("http://localhost:8080/api/language/word"));
+    final response = await http.get(Uri.parse("$url/word"));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return data["word"].split(" ")[0];
+      String firstCharacter = data["word"].split(" ")[0];
+      _answer.add(firstCharacter);
+      return firstCharacter;
     }
 
     throw Exception('Failed to load album');
+  }
+
+  Future<bool> checkValidWord(String word) async {
+    Map<String, String> headers = {"Content-type": "application/json"};
+    final response = await http.post(Uri.parse("$url/check"),
+        headers: headers, body: jsonEncode({"text": word}));
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
+  // Logic Handler
+  void handleClickCheck() async {
+    String userAnswer = controller.text;
+    String firstChar = _answer.last;
+    String checkingWord = "$firstChar $userAnswer";
+
+    bool isValidWord = await checkValidWord(checkingWord);
+    if (isValidWord) {
+      _answer.add(userAnswer);
+      setState(() {
+        _point += 200;
+      });
+    }
+
+    controller.text = "";
   }
 
   @override
@@ -108,7 +142,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
                     width: 180,
                     height: 120,
                     alignment: Alignment.center,
-                    child: Text(snapshot.data!,
+                    child: Text(_answer.last,
                         style: const TextStyle(
                             fontSize: 30, color: Colors.white))),
                 Container(
@@ -117,10 +151,11 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
                     width: 180,
                     height: 120,
                     alignment: Alignment.center,
-                    child: const TextField(
+                    child: TextField(
+                      controller: controller,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 30),
-                      decoration: InputDecoration(
+                      style: const TextStyle(fontSize: 30),
+                      decoration: const InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                         border: InputBorder.none,
                         hintText: "Nhập từ",
@@ -131,7 +166,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
                 height: 120,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => handleClickCheck(),
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 14),
