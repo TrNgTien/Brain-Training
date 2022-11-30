@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:math';
+import 'enum.dart';
 
 class LanguageGameThree extends StatefulWidget {
   const LanguageGameThree({super.key});
@@ -13,10 +15,15 @@ class LanguageGameThree extends StatefulWidget {
 }
 
 class _LanguageGameThreeState extends State<LanguageGameThree> {
-  final String url = Platform.isAndroid
+  final String baseUrl = Platform.isAndroid
       ? 'http://192.168.1.2:8080/api/language'
       : 'http://localhost:8080/api/language';
+  final Uri dictionaryUrl =
+      Uri.parse('https://vietnamese-wordlist.duyet.net/Viet74K.txt');
+
   final int answerDurationInSeconds = 60;
+  final int pointPerCorrectAnswer = 200;
+
   Duration answerDuration = const Duration();
   Timer? countdownTimer;
 
@@ -24,6 +31,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
   late Future<String> firstCharacter;
   List<String> _answer = [];
   int _point = 0;
+  GameStatus _status = GameStatus.playing;
 
   // Timer Handler
   void startTimer() {
@@ -39,6 +47,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
       final seconds = answerDuration.inSeconds - reduceSecondsBy;
       if (seconds < 0) {
         setCancelTimer();
+        changeStatus(GameStatus.end);
       } else {
         answerDuration = Duration(seconds: seconds);
       }
@@ -51,21 +60,24 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   // Fetch Data
   Future<String> fetchRandomCharacter() async {
-    final response = await http.get(Uri.parse("$url/word"));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      String firstCharacter = data["word"].split(" ")[0];
+    final response = await http.get(dictionaryUrl);
+    final data = response.body;
+    List<String> dataList = data.toLowerCase().split('\n');
+
+    if (dataList.isNotEmpty) {
+      String firstCharacter =
+          dataList[Random().nextInt(dataList.length)].split(' ')[0];
       _answer.add(firstCharacter);
       return firstCharacter;
     }
 
-    throw Exception('Failed to load album');
+    throw Exception('Failed to load random character in the dictionary');
   }
 
   Future<bool> checkValidWord(String word) async {
-    Map<String, String> headers = {"Content-type": "application/json"};
-    final response = await http.post(Uri.parse("$url/check"),
-        headers: headers, body: jsonEncode({"text": word}));
+    Map<String, String> headers = {'Content-type': 'application/json'};
+    final response = await http.post(Uri.parse('$baseUrl/check'),
+        headers: headers, body: jsonEncode({'text': word}));
     if (response.statusCode == 200) {
       return true;
     }
@@ -76,17 +88,35 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
   void handleClickCheck() async {
     String userAnswer = controller.text;
     String firstChar = _answer.last;
-    String checkingWord = "$firstChar $userAnswer";
+    String checkingWord = '$firstChar $userAnswer';
 
     bool isValidWord = await checkValidWord(checkingWord);
     if (isValidWord) {
       _answer.add(userAnswer);
       setState(() {
-        _point += 200;
+        _point += pointPerCorrectAnswer;
+        // Restart timer
+        answerDuration = Duration(seconds: answerDurationInSeconds);
       });
     }
 
-    controller.text = "";
+    controller.text = '';
+  }
+
+  void changeStatus(GameStatus status) {
+    handleStatusChange(status);
+
+    setState(() {
+      _status = status;
+    });
+  }
+
+  void handleStatusChange(GameStatus status) {
+    if (status == GameStatus.end) {
+      _showMyDialog('Kết thúc', () {
+        Navigator.of(context).pop();
+      });
+    }
   }
 
   @override
@@ -105,11 +135,12 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     final seconds = answerDuration.inSeconds;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Language Game Three'),
+        title: const Text('Trò chơi nối chữ'),
       ),
       body: SingleChildScrollView(
           child: FutureBuilder<String>(
@@ -125,13 +156,13 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
                     fontSize: 50),
               ),
               Text(
-                "Điểm: $_point",
+                'Điểm: $_point',
                 style: const TextStyle(fontSize: 30, color: Colors.red),
               ),
               const SizedBox(
                 height: 30,
               ),
-              const Text("Hãy điền tiếng tiếp theo để tạo nên một từ có nghĩa",
+              const Text('Hãy điền tiếng tiếp theo để tạo nên một từ có nghĩa',
                   textAlign: TextAlign.center, style: TextStyle(fontSize: 25)),
               const SizedBox(
                 height: 60,
@@ -152,13 +183,14 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
                     height: 120,
                     alignment: Alignment.center,
                     child: TextField(
+                      enabled: _status == GameStatus.playing,
                       controller: controller,
                       textAlign: TextAlign.center,
                       style: const TextStyle(fontSize: 30),
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                         border: InputBorder.none,
-                        hintText: "Nhập từ",
+                        hintText: 'Nhập từ',
                       ),
                     ))
               ]),
@@ -166,12 +198,15 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
                 height: 120,
               ),
               ElevatedButton(
-                onPressed: () => handleClickCheck(),
+                onPressed:
+                    controller.text.isNotEmpty && _status == GameStatus.playing
+                        ? () => handleClickCheck()
+                        : null,
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 14),
                     textStyle: const TextStyle(fontSize: 24)),
-                child: const Text("Kiểm tra"),
+                child: const Text('Kiểm tra'),
               )
             ]);
           } else if (snapshot.hasError) {
@@ -179,9 +214,36 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
           }
 
           // By default, show a loading spinner.
-          return const CircularProgressIndicator();
+          return const Center(
+              heightFactor: 22.0, child: CircularProgressIndicator());
         },
       )),
+    );
+  }
+
+  Future<void> _showMyDialog(String title, Function callback) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Tổng điểm: $_point'),
+              ],
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Xác nhận'),
+              onPressed: () => callback(),
+            ),
+          ],
+        );
+      },
     );
   }
 }
