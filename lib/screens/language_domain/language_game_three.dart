@@ -92,12 +92,15 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
     bool isValidWord = await checkValidWord(checkingWord);
     if (isValidWord) {
+      _showToast('Chính xác', Colors.green);
       _answer.add(userAnswer);
       setState(() {
         _point += pointPerCorrectAnswer;
         // Restart timer
         answerDuration = Duration(seconds: answerDurationInSeconds);
       });
+    } else {
+      _showToast('Không hợp lệ', Colors.red);
     }
 
     controller.text = '';
@@ -135,7 +138,6 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final seconds = answerDuration.inSeconds;
 
     return Scaffold(
@@ -244,6 +246,22 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
           ],
         );
       },
+    );
+  }
+
+  void _showToast(String content, Color snackBarColor) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        backgroundColor: snackBarColor,
+        content: Text(content),
+        width: 280.0, // Width of the SnackBar.
+        duration: const Duration(milliseconds: 1500),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
     );
   }
 }
