@@ -153,6 +153,9 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   void handleStatusChange(GameStatus status) {
     switch (status) {
       case GameStatus.checking:
+        if (_currentQuestion >= _wordsList.length - 1) {
+          return changeStatus(GameStatus.end);
+        }
         userFinishQuestion();
         break;
       case GameStatus.end:
