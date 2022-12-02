@@ -23,11 +23,9 @@ class _Game1State extends State<Game1> {
   int currentIndex = 0;
   List charList = [];
   Timer? countdownTimer;
-  Duration myDuration = const Duration(seconds: 119);
+  Duration myDuration = const Duration(seconds: 299);
   TextEditingController controllerInput = TextEditingController();
-  final String endpointUrl = Platform.isAndroid
-      ? 'http://192.168.1.2:5001/api/language'
-      : 'http://localhost:5001/api/language';
+  final String endpointUrl = 'https://mobile.iuweb.online/api/language';
 
   @override
   void initState() {
@@ -65,7 +63,7 @@ class _Game1State extends State<Game1> {
     _showMyDialog("Kết thúc", "Điểm: $score", () {
       Navigator.of(context).pop();
       setState(() {
-        myDuration = const Duration(seconds: 119);
+        myDuration = const Duration(seconds: 299);
         score = 0;
         currentIndex = Random().nextInt(charList.length);
         starterChar = charList[currentIndex];
@@ -101,8 +99,6 @@ class _Game1State extends State<Game1> {
     String checkingWord = "$starterChar$userAnswer";
     bool isValidWord = await checkValidWord(checkingWord);
     if (isValidWord) {
-      currentIndex = Random().nextInt(charList.length);
-      starterChar = charList[currentIndex];
       if (wordInput.length == 2) {
         setState(() {
           score += 200;
@@ -188,11 +184,12 @@ class _Game1State extends State<Game1> {
                   bottom: 20,
                   left: 20,
                 ),
-                child: Text("Thời gian còn lại: ${myDuration.inSeconds}",
+                child: Text(
+                    "Thời gian còn lại: ${myDuration.inSeconds} (5 phút)",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
-                        fontSize: 30)),
+                        fontSize: 20)),
               ),
               Text("Điểm: $score",
                   style: const TextStyle(
