@@ -2,6 +2,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:mobile_proj/screens/language_domain/game-1.dart';
 import 'package:mobile_proj/screens/math_domain/math_game_one.dart';
 import 'package:mobile_proj/screens/language_domain/language_game_four.dart';
 import 'package:mobile_proj/screens/math_domain/game_2.dart';
@@ -72,6 +73,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           const LanguageGameFour()));
                 },
                 child: const Text("Language game 4")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => const Game1()));
+                },
+                child: const Text("Language game 2")),
           ],
         ),
       ),
