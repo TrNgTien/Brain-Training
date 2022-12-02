@@ -39,6 +39,7 @@ dependencies:
   flutter_svg: ^1.1.6
   function_tree: ^0.8.13
   characters: ^1.2.1
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +67,7 @@ flutter:
     - lib/constants/math_game.json
     - lib/constants/language_game.json
     - lib/constants/math-game-2.json
+    - lib/constants/language-1.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
