@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'utils.dart';
-import 'enum.dart';
+import '../../constants/enum.dart';
+import '../../utils/helper.dart';
 
 class LanguageGameFour extends StatefulWidget {
   const LanguageGameFour({Key? key}) : super(key: key);

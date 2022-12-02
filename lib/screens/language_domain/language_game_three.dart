@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
-import 'enum.dart';
+import '../../constants/enum.dart';
+import '../../constants/base_url.dart';
 
 class LanguageGameThree extends StatefulWidget {
   const LanguageGameThree({super.key});
@@ -15,12 +14,6 @@ class LanguageGameThree extends StatefulWidget {
 }
 
 class _LanguageGameThreeState extends State<LanguageGameThree> {
-  final String baseUrl = Platform.isAndroid
-      ? 'http://192.168.1.2:8080/api/language'
-      : 'http://localhost:8080/api/language';
-  final Uri dictionaryUrl =
-      Uri.parse('https://vietnamese-wordlist.duyet.net/Viet74K.txt');
-
   final int answerDurationInSeconds = 60;
   final int pointPerCorrectAnswer = 200;
 
