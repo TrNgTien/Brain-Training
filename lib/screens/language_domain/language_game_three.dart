@@ -22,7 +22,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   TextEditingController controller = TextEditingController();
   late Future<String> firstCharacter;
-  List<String> _answer = [];
+  final List<String> _answer = [];
   int _point = 0;
   GameStatus _status = GameStatus.playing;
 
