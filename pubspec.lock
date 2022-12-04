@@ -88,6 +88,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.13"
+<<<<<<< HEAD
   http:
     dependency: "direct main"
     description:
@@ -102,6 +103,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
+=======
+>>>>>>> 724551a (Phuc | Add | Complete math_game_1)
   lints:
     dependency: transitive
     description:
