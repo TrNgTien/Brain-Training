@@ -69,7 +69,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   Future<bool> checkValidWord(String word) async {
     Map<String, String> headers = {'Content-type': 'application/json'};
-    final response = await http.post(Uri.parse('$baseUrl/check'),
+    final response = await http.post(Uri.parse('$baseUrlLanguage/check'),
         headers: headers, body: jsonEncode({'text': word}));
     if (response.statusCode == 200) {
       return true;

@@ -1,4 +1,4 @@
-const baseUrl = "https://mobile.iuweb.online/api/language";
+const baseUrlLanguage = "https://mobile.iuweb.online/api/language";
 
 // outside API for language game to fetch random characters
 final Uri dictionaryUrl =
