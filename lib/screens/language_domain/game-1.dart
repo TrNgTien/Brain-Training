@@ -99,27 +99,27 @@ class _Game1State extends State<Game1> {
     String checkingWord = "$starterChar$userAnswer";
     bool isValidWord = await checkValidWord(checkingWord);
     if (isValidWord) {
-      if (wordInput.length == 2) {
+      if (checkingWord.length == 2) {
         setState(() {
           score += 200;
         });
-      } else if (wordInput.length == 3) {
+      } else if (checkingWord.length == 3) {
         setState(() {
           score += 300;
         });
-      } else if (wordInput.length == 4) {
+      } else if (checkingWord.length == 4) {
         setState(() {
-          score += 300;
+          score += 400;
         });
-      } else if (wordInput.length == 5) {
+      } else if (checkingWord.length == 5) {
         setState(() {
           score += 500;
         });
-      } else if (wordInput.length == 6) {
+      } else if (checkingWord.length == 6) {
         setState(() {
           score += 600;
         });
-      } else if (wordInput.length == 7) {
+      } else if (checkingWord.length == 7) {
         setState(() {
           score += 700;
         });
@@ -132,16 +132,8 @@ class _Game1State extends State<Game1> {
   }
 
   void handleCheckResult() {
-    if (wordInput.isNotEmpty && wordInput.length >= 2) {
+    if (wordInput.isNotEmpty) {
       handleClickCheck();
-    } else {
-      _showMyDialog("Thông báo", "Nhập ít nhất 2 ký tự", () {
-        setState(() {
-          Navigator.of(context).pop();
-          wordInput = "";
-          controllerInput.clear();
-        });
-      });
     }
   }
 
