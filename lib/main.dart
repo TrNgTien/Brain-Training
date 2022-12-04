@@ -2,11 +2,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mobile_proj/screens/language_domain/game-1.dart';
-import 'package:mobile_proj/screens/math_domain/math_game_one.dart';
-import 'package:mobile_proj/screens/language_domain/language_game_three.dart';
-import 'package:mobile_proj/screens/language_domain/language_game_four.dart';
-import 'package:mobile_proj/screens/math_domain/game_2.dart';
+import 'package:brain_training/screens/language_domain/game-1.dart';
+import 'package:brain_training/screens/math_domain/math_game_one.dart';
+import 'package:brain_training/screens/language_domain/language_game_three.dart';
+import 'package:brain_training/screens/language_domain/language_game_four.dart';
+import 'package:brain_training/screens/math_domain/game_2.dart';
 
 void main() {
   runApp(const MyApp());
