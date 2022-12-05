@@ -88,11 +88,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.13"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7e711e0 (Tien | Done | Finish game-1-language (#8))
   http:
     dependency: "direct main"
     description:
@@ -107,20 +102,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
-<<<<<<< HEAD
-=======
->>>>>>> 724551a (Phuc | Add | Complete math_game_1)
-=======
->>>>>>> 79dadf3 (Finish Feat/game 1 math (#1))
-=======
->>>>>>> 7e711e0 (Tien | Done | Finish game-1-language (#8))
   lints:
     dependency: transitive
     description:
       name: lints
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   matcher:
     dependency: transitive
     description:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:brain_training/constants/color.dart';
 
 class Game2 extends StatefulWidget {
   const Game2({super.key});
@@ -163,13 +164,13 @@ class _Game2State extends State<Game2> {
     });
   }
 
-  String gameType() {
+  num gameType() {
     if (currentMultipleType == 1) {
-      return "10";
+      return 10;
     } else if (currentMultipleType == 2) {
-      return "100";
+      return 100;
     } else {
-      return "1000";
+      return 1000;
     }
   }
 
@@ -179,6 +180,13 @@ class _Game2State extends State<Game2> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Tìm tổng 2 số có tổng là ${gameType()}'),
+          backgroundColor: yellowBtn,
+          foregroundColor: darkTextColor,
+          titleTextStyle: const TextStyle(
+            color: darkTextColor,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -188,16 +196,16 @@ class _Game2State extends State<Game2> {
                 child: Text(
                   "Điểm: $currentScore",
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      color: darkTextColor,
                       fontSize: 35),
                 ),
               ),
               Text(
                 'Thời gian: $seconds giây',
                 style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                    color: darkTextColor,
                     fontSize: 30),
               ),
               SizedBox(
@@ -223,6 +231,7 @@ class _Game2State extends State<Game2> {
             currentRound = 1;
             amountOfCorrectAnswers = 0;
             clickedOptions = [];
+            currentMultipleType = 2;
             currentGridData = gridDataHundred;
             timerCounter = Duration(seconds: timer);
           });
@@ -256,6 +265,7 @@ class _Game2State extends State<Game2> {
             currentRound = 1;
             amountOfCorrectAnswers = 0;
             clickedOptions = [];
+            currentMultipleType = 3;
             currentGridData = gridDataThousand;
             timerCounter = Duration(seconds: timer);
           });
@@ -389,8 +399,8 @@ class _Game2State extends State<Game2> {
                         padding: const EdgeInsets.all(1.0),
                         decoration: BoxDecoration(
                           color: validateHighLight(indexGrid)
-                              ? Colors.blue
-                              : Colors.blue[50],
+                              ? greenBtn
+                              : yellowPastel,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(10.0)),
                         ),
@@ -401,8 +411,8 @@ class _Game2State extends State<Game2> {
                               child: Text(
                                   "${gridData[currentIndexing]["round_$currentRound"][indexGrid]}",
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700,
+                                    color: darkTextColor,
                                     fontSize: 50,
                                   )),
                             ))))

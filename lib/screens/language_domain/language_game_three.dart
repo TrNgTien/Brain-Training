@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:math';
 import '../../constants/enum.dart';
 import '../../constants/base_url.dart';
+import 'package:brain_training/constants/color.dart';
 
 class LanguageGameThree extends StatefulWidget {
   const LanguageGameThree({super.key});
@@ -136,6 +137,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trò chơi nối chữ'),
+        backgroundColor: primaryOrange,
       ),
       body: SingleChildScrollView(
           child: FutureBuilder<String>(
@@ -164,7 +166,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 Container(
-                    color: Colors.blue[600],
+                    color: primaryOrange,
                     width: 180,
                     height: 120,
                     alignment: Alignment.center,
@@ -198,6 +200,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
                         ? () => handleClickCheck()
                         : null,
                 style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryOrange,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 14),
                     textStyle: const TextStyle(fontSize: 24)),

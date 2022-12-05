@@ -1,20 +1,19 @@
 import 'dart:math';
-
+import 'package:brain_training/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
-class Game1 extends StatefulWidget {
-  const Game1({super.key});
+class LanguageGameOne extends StatefulWidget {
+  const LanguageGameOne({super.key});
 
   @override
-  State<Game1> createState() => _Game1State();
+  State<LanguageGameOne> createState() => _LanguageGameOneState();
 }
 
-class _Game1State extends State<Game1> {
+class _LanguageGameOneState extends State<LanguageGameOne> {
   String listChar = "lib/constants/language-1.json";
   String starterChar = "";
   String wordInput = "";
@@ -166,15 +165,16 @@ class _Game1State extends State<Game1> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Tìm từ hợp lệ'),
+          backgroundColor: primaryOrange,
         ),
         body: SingleChildScrollView(
+            child: Center(
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.only(
                   top: 30,
                   bottom: 20,
-                  left: 20,
                 ),
                 child: Text(
                     "Thời gian còn lại: ${myDuration.inSeconds} (5 phút)",
@@ -192,7 +192,6 @@ class _Game1State extends State<Game1> {
                 padding: EdgeInsets.only(
                   top: 30,
                   bottom: 20,
-                  left: 20,
                 ),
                 child: Text("Tìm chữ/từ thích hợp bắt đầu bằng:",
                     style: TextStyle(
@@ -242,6 +241,6 @@ class _Game1State extends State<Game1> {
               ),
             ],
           ),
-        ));
+        )));
   }
 }
