@@ -49,19 +49,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.only(
-                bottom: 30,
-              ),
-              child: Text("Chọn lĩnh vực trò chơi",
-                  style: TextStyle(
-                    fontSize: 35,
-                    color: primaryOrange,
-                    fontWeight: FontWeight.w700,
-                  )),
-            ),
+            const Text("Chọn lĩnh vực trò chơi",
+                style: TextStyle(
+                  fontSize: 35,
+                  color: primaryOrange,
+                  fontWeight: FontWeight.w700,
+                )),
             gridDomain(listDomain, context),
           ],
         ),
