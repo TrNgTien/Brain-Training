@@ -41,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         backgroundColor: orangePastel,
         foregroundColor: darkTextColor,
+        automaticallyImplyLeading: false,
         titleTextStyle: const TextStyle(
           color: darkTextColor,
           fontSize: 20,
@@ -87,7 +88,7 @@ GridView gridDomain(List listDomain, BuildContext context) {
       gridDelegate:
           const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemBuilder: (_, int index) {
-        return InkWell(
+        return GestureDetector(
             onTap: () => {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) =>

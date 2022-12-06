@@ -1,8 +1,7 @@
-import 'package:brain_training/main.dart';
+import 'package:brain_training/screens/auth/login_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:brain_training/constants/color.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,17 +19,15 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(
       seconds: 2,
     )).then((value) {
-      Navigator.of(context).pushReplacement(CupertinoPageRoute(
-          builder: (ctx) => const MyHomePage(
-                title: "Brain Training",
-              )));
+      Navigator.of(context).pushReplacement(
+          CupertinoPageRoute(builder: (ctx) => const LoginScreen()));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: primaryBackground,
       body: SizedBox(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
