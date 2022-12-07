@@ -1,12 +1,11 @@
 import 'dart:convert' show json;
 import 'package:brain_training/screens/auth/register_screen.dart';
-import 'package:brain_training/screens/game_list.dart';
+import 'package:brain_training/widget/logo_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:brain_training/constants/color.dart';
-
-import '../../main.dart';
+import 'package:brain_training/main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: primaryOrange,
                       fontWeight: FontWeight.w700,
                     )),
+                LogoApp(),
                 Column(
                   children: [
                     GestureDetector(
@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               fullscreenDialog: true));
                         },
                         child: Container(
-                          margin: const EdgeInsets.only(top: 50),
+                          margin: const EdgeInsets.only(top: 20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: blueFbBtn,

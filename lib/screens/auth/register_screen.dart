@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:brain_training/main.dart';
 
-import '../../main.dart';
+import '../../widget/logo_app.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -35,6 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: primaryOrange,
                       fontWeight: FontWeight.w700,
                     )),
+                LogoApp(),
                 Column(
                   children: [
                     GestureDetector(
@@ -47,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               fullscreenDialog: true));
                         },
                         child: Container(
-                          margin: const EdgeInsets.only(top: 50),
+                          margin: const EdgeInsets.only(top: 10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: blueFbBtn,

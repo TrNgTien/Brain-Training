@@ -1,5 +1,6 @@
 import 'package:brain_training/screens/math_domain/game_2.dart';
 import 'package:brain_training/screens/math_domain/math_game_one.dart';
+import 'package:brain_training/screens/memory_domain/game-1.dart';
 import 'package:flutter/material.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:flutter/scheduler.dart';
@@ -200,7 +201,10 @@ class _GameListState extends State<GameList> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const Game1()));
+            },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
