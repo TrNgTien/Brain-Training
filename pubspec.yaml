@@ -1,4 +1,4 @@
-name: mobile_proj
+name: brain_training
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -68,6 +68,8 @@ flutter:
     - lib/constants/language_game.json
     - lib/constants/math-game-2.json
     - lib/constants/language-1.json
+    - lib/assets/images/
+    - lib/assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
