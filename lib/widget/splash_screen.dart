@@ -1,4 +1,5 @@
 import 'package:brain_training/screens/auth/login_screen.dart';
+import 'package:brain_training/widget/logo_app.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             ),
+            LogoApp(),
             const SizedBox(
               height: 50,
             ),
