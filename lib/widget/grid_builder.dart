@@ -15,6 +15,7 @@ class _GridBuilderState extends State<GridBuilder> {
   List<int> randomList = [];
   List<int> locations = [];
   List<int> correctLocations = [];
+  int currentLevel = 1;
   bool correctLocation = false;
   dynamic chosenLocation;
 
@@ -22,13 +23,13 @@ class _GridBuilderState extends State<GridBuilder> {
   void initState() {
     super.initState();
     getRandomLocation();
-    Future.delayed(const Duration(
-      seconds: 2,
-    )).then((_) {
-      setState(() {
-        randomList = [];
-      });
-    });
+    // Future.delayed(const Duration(
+    //   seconds: 10,
+    // )).then((_) {
+    //   setState(() {
+    //     randomList = [];
+    //   });
+    // });
   }
 
   @override
@@ -93,9 +94,9 @@ class _GridBuilderState extends State<GridBuilder> {
               child: GridTile(
                   child: Container(
                 decoration: BoxDecoration(
-                  color: validateLocation(indexGrid),
-                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                ),
+                    color: validateLocation(indexGrid),
+                    // borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                    border: Border.all(color: greenPastel)),
               )));
         });
   }
