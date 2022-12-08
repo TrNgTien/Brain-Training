@@ -1,15 +1,15 @@
-import 'package:brain_training/screens/math_domain/game_2.dart';
-import 'package:brain_training/screens/math_domain/math_game_one.dart';
-import 'package:brain_training/screens/memory_domain/game-1.dart';
 import 'package:flutter/material.dart';
+import 'package:brain_training/screens/games_screen/math_domain/game_2.dart';
+import 'package:brain_training/screens/games_screen/math_domain/math_game_one.dart';
+import 'package:brain_training/screens/games_screen/memory_domain/game-1.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_one.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_four.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_three.dart';
 import 'package:brain_training/constants/color.dart';
-import '../widget/bottom_nav.dart';
-import 'language_domain/language_game_one.dart';
-import 'language_domain/language_game_four.dart';
-import 'language_domain/language_game_three.dart';
+import 'package:brain_training/widget/bottom_nav.dart';
 
 class GameList extends StatefulWidget {
-  String domainName;
+  final domainName;
   GameList({super.key, required this.domainName});
 
   @override

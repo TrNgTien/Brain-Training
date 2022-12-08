@@ -1,11 +1,13 @@
+import 'package:brain_training/main.dart';
+import 'package:brain_training/screens/profile_screen/profile_screen.dart';
+import 'package:brain_training/screens/ranking_screen/ranking_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:brain_training/constants/color.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BottomNav extends StatefulWidget {
-  Color? colorBackground;
-  Color? colorUnselectedItem;
-  Color? colorSelectedItem;
+  final Color? colorBackground;
+  final Color? colorUnselectedItem;
+  final Color? colorSelectedItem;
   BottomNav(
       {super.key,
       required this.colorBackground,
@@ -21,10 +23,24 @@ class _BottomNavState extends State<BottomNav> {
   String profileIcon = "lib/assets/icons/profile_ic.svg";
   String rankingIcon = "lib/assets/icons/ranking_ic.svg";
   int _selectedIndex = 0;
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    if (_selectedIndex == 0) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => const MyHomePage(
+                title: "Brain Training",
+              ),
+          fullscreenDialog: true));
+    } else if (_selectedIndex == 1) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => RankingScreen()));
+    } else if (_selectedIndex == 2) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => ProfileScreen()));
+    }
   }
 
   @override
