@@ -37,6 +37,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List listDomain = ["Trí nhớ", "Nhận thức", "Ngôn ngữ", "Toán học"];
 
+  String playingIcon = "lib/assets/icons/playing_ic.svg";
+  String profileIcon = "lib/assets/icons/profile_ic.svg";
+  String rankingIcon = "lib/assets/icons/ranking_ic.svg";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
