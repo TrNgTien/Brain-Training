@@ -76,6 +76,10 @@ flutter:
     - lib/constants/math-game-2.json
     - lib/constants/language-1.json
     - lib/assets/images/
+    - lib/assets/images/Animal/
+    - lib/assets/images/Transportation/
+    - lib/assets/images/FruitVegetable/
+    - lib/assets/images/HouseholdItem/
     - lib/assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
