@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:brain_training/constants/color.dart';
+import 'package:flutter_svg/svg.dart';
 
 class Game2 extends StatefulWidget {
   const Game2({super.key});
@@ -133,21 +135,44 @@ class _Game2State extends State<Game2> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => AlertDialog(
-              title: Text(title),
+              title: Text(title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w600)),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
-                    Text(content),
-                    Text(totalScore),
+                    Text(
+                      content,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      totalScore,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
                   ],
                 ),
               ),
               actionsAlignment: MainAxisAlignment.center,
               actions: <Widget>[
-                TextButton(
-                  child: const Text('Chơi lại'),
-                  onPressed: () => callback(),
-                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(left: 50, right: 50),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                    color: orangePastel,
+                  ),
+                  child: TextButton(
+                    child: const Text('Chơi lại',
+                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                    onPressed: () => callback(),
+                  ),
+                )
               ],
             ));
   }
@@ -175,10 +200,18 @@ class _Game2State extends State<Game2> {
 
   @override
   Widget build(BuildContext context) {
-    final seconds = timerCounter.inSeconds;
+    int seconds = timerCounter.inSeconds;
+    String clockIcon = "lib/assets/icons/clock_ic.svg";
     return Scaffold(
         appBar: AppBar(
           title: Text('Tìm tổng 2 số có tổng là ${gameType()}'),
+          backgroundColor: orangePastel,
+          foregroundColor: darkTextColor,
+          titleTextStyle: const TextStyle(
+            color: darkTextColor,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -188,17 +221,26 @@ class _Game2State extends State<Game2> {
                 child: Text(
                   "Điểm: $currentScore",
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      color: primaryOrange,
                       fontSize: 35),
                 ),
               ),
-              Text(
-                'Thời gian: $seconds giây',
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    clockIcon,
+                    height: 35,
+                    width: 35,
+                    color: seconds <= 2 ? Colors.red : darkTextColor,
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  clockTimer(seconds)
+                ],
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.85,
@@ -207,6 +249,22 @@ class _Game2State extends State<Game2> {
             ],
           ),
         ));
+  }
+
+  Widget clockTimer(int seconds) {
+    if (seconds <= 2) {
+      return Text(
+        '00:${seconds <= 9 ? '0$seconds' : '$seconds'}',
+        style: const TextStyle(
+            fontWeight: FontWeight.w700, color: Colors.red, fontSize: 20),
+      );
+    } else {
+      return Text(
+        '00:${seconds <= 9 ? '0$seconds' : '$seconds'}',
+        style: const TextStyle(
+            fontWeight: FontWeight.w700, color: darkTextColor, fontSize: 20),
+      );
+    }
   }
 
   GridView gridOptions(List gridData) {
@@ -346,7 +404,7 @@ class _Game2State extends State<Game2> {
           setState(() {
             indexClicked = index;
             clickedOptions.add(option);
-            Future.delayed(const Duration(milliseconds: 300), () {
+            Future.delayed(const Duration(milliseconds: 200), () {
               validateAnswer(verifyChangeType(currentMultipleType));
             });
           });
@@ -375,7 +433,7 @@ class _Game2State extends State<Game2> {
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (_, int indexGrid) {
-          return InkWell(
+          return GestureDetector(
             onTap: () => handleAddOption(
                 gridData.isNotEmpty
                     ? gridData[currentIndexing]["round_$currentRound"]
@@ -389,8 +447,8 @@ class _Game2State extends State<Game2> {
                         padding: const EdgeInsets.all(1.0),
                         decoration: BoxDecoration(
                           color: validateHighLight(indexGrid)
-                              ? Colors.blue
-                              : Colors.blue[50],
+                              ? greenBtn
+                              : orangePastel,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(10.0)),
                         ),

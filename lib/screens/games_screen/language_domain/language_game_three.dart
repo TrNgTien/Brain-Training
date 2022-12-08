@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
-import '../../constants/enum.dart';
-import '../../constants/base_url.dart';
+import 'package:brain_training/constants/enum.dart';
+import 'package:brain_training/constants/base_url.dart';
 import 'package:brain_training/constants/color.dart';
 
 class LanguageGameThree extends StatefulWidget {
