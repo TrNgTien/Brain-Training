@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:brain_training/constants/color.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/main.dart';
-
-import '../../widget/logo_app.dart';
+import 'package:brain_training/widget/logo_app.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
