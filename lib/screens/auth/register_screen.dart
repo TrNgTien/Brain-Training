@@ -49,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               fullscreenDialog: true));
                         },
                         child: Container(
-                          margin: const EdgeInsets.only(top: 10),
+                          margin: const EdgeInsets.only(top: 20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: blueFbBtn,
@@ -59,27 +59,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           height: 50,
                           width: 250,
-                          child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  facebookIcon,
-                                  height: 30,
-                                  width: 30,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Text(
-                                  "Tài khoản Facebook",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ]),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SvgPicture.asset(
+                              facebookIcon,
+                              height: 30,
+                              width: 30,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "Tài khoản Facebook",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ]),
                         )),
                     GestureDetector(
                         onTap: () {
@@ -101,27 +102,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           height: 50,
                           width: 250,
-                          child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  googleIcon,
-                                  height: 30,
-                                  width: 30,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Text(
-                                  "Tài khoản Google",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ]),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SvgPicture.asset(
+                              googleIcon,
+                              height: 30,
+                              width: 30,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "Tài khoản Google",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ]),
                         )),
                   ],
                 ),
