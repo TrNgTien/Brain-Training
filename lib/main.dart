@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:brain_training/widget/bottom_nav.dart';
 import 'package:brain_training/widget/splash_screen.dart';
 import 'package:brain_training/constants/color.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +27,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override

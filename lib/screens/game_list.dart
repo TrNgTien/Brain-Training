@@ -8,6 +8,8 @@ import 'package:brain_training/screens/games_screen/language_domain/language_gam
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/widget/bottom_nav.dart';
 
+import 'memory_domain/memory_game_3.dart';
+
 class GameList extends StatefulWidget {
   final domainName;
   GameList({super.key, required this.domainName});
@@ -164,49 +166,50 @@ class _GameListState extends State<GameList> {
 
   Widget mathList(BuildContext context) {
     return Center(
-        child: Column(
-      children: [
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: darkTextColor,
-              backgroundColor: greenBtn,
-              textStyle: const TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
+      child: Column(
+        children: [
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: darkTextColor,
+                backgroundColor: greenBtn,
+                textStyle: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const MathGame()));
-            },
-            child: const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                "Tìm số nhỏ hơn",
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => const MathGame()));
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  "Tìm số nhỏ hơn",
+                ),
+              )),
+          const SizedBox(height: 50),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: darkTextColor,
+                backgroundColor: yellowBtn,
+                textStyle: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            )),
-        const SizedBox(height: 50),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: darkTextColor,
-              backgroundColor: yellowBtn,
-              textStyle: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const Game2()));
-            },
-            child: const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                "Tìm tổng 2 số",
-              ),
-            )),
-      ],
-    ));
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => const Game2()));
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  "Tìm tổng 2 số",
+                ),
+              )),
+        ],
+      ),
+    );
   }
 
   Widget memoryList(BuildContext context) {
@@ -259,7 +262,10 @@ class _GameListState extends State<GameList> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const MemoryGame3()));
+            },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(

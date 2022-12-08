@@ -188,13 +188,13 @@ class _Game2State extends State<Game2> {
     });
   }
 
-  num gameType() {
+  String gameType() {
     if (currentMultipleType == 1) {
-      return 10;
+      return "10";
     } else if (currentMultipleType == 2) {
-      return 100;
+      return "100";
     } else {
-      return 1000;
+      return "1000";
     }
   }
 
@@ -281,7 +281,6 @@ class _Game2State extends State<Game2> {
             currentRound = 1;
             amountOfCorrectAnswers = 0;
             clickedOptions = [];
-            currentMultipleType = 2;
             currentGridData = gridDataHundred;
             timerCounter = Duration(seconds: timer);
           });
@@ -315,7 +314,6 @@ class _Game2State extends State<Game2> {
             currentRound = 1;
             amountOfCorrectAnswers = 0;
             clickedOptions = [];
-            currentMultipleType = 3;
             currentGridData = gridDataThousand;
             timerCounter = Duration(seconds: timer);
           });
@@ -461,8 +459,8 @@ class _Game2State extends State<Game2> {
                               child: Text(
                                   "${gridData[currentIndexing]["round_$currentRound"][indexGrid]}",
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: darkTextColor,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                     fontSize: 50,
                                   )),
                             ))))
