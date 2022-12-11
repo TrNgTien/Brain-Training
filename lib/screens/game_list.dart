@@ -8,6 +8,7 @@ import 'package:brain_training/screens/games_screen/language_domain/language_gam
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/widget/bottom_nav.dart';
 
+import 'memory_domain/memory_game_2.dart';
 import 'memory_domain/memory_game_3.dart';
 
 class GameList extends StatefulWidget {
@@ -245,7 +246,10 @@ class _GameListState extends State<GameList> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const MemoryGame2()));
+            },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
