@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:brain_training/constants/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:stack/stack.dart' as StackDS;
 import 'package:brain_training/widget/toast.dart';
+import 'package:brain_training/widget/custom_dialog.dart';
 
 class MemoryGameTwo extends StatefulWidget {
   const MemoryGameTwo({Key? key}) : super(key: key);
@@ -29,6 +31,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   bool endGame = false;
 
   late Toast toast;
+  late CustomDialog dialog;
 
   Future<List<List<String>>> _loadImagesPath() async {
     final manifestContent = await rootBundle.loadString('AssetManifest.json');
@@ -109,7 +112,8 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   }
 
   void handleCorrectAnswer(String userSelectedCards) {
-    toast.show("Chính xác!", Colors.green, 1000);
+    toast.show("Chính xác!", Colors.green,
+        snackBarDuration: 1000, position: ToastPosition.top);
     setState(() {
       selectedCards.addAll([userSelectedCards, ""]);
       point += 500;
@@ -118,7 +122,8 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   }
 
   void handleWrongAnswer() {
-    toast.show("Sai rồi! Chơi lại nhé", Colors.red, 1000);
+    toast.show("Sai rồi! Chơi lại nhé", Colors.red,
+        snackBarDuration: 1000, position: ToastPosition.top);
     calculateBonusPoints();
     if (trial >= MAX_TRIALS) {
       setState(() {
@@ -126,9 +131,14 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
         endGame = true;
       });
 
-      _showMyDialog("Kết thúc", () {
-        Navigator.of(context).pop();
-      });
+      dialog.show(
+          titleWidget: Text("kết thúc"),
+          contentWidget: Text("Tổng điểm: $point"),
+          actionWidget: [
+            TextButton(
+                child: const Text('Xác nhận'),
+                onPressed: () => Navigator.of(context).pop())
+          ]);
       return;
     }
     nextTrial();
@@ -169,7 +179,10 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   void initState() {
     super.initState();
 
+    // Setup for dialog and toast
     toast = Toast(context: context);
+    dialog = CustomDialog(context: context);
+
     _initImages();
   }
 
@@ -269,31 +282,5 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
             ],
           ),
         ));
-  }
-
-  Future<void> _showMyDialog(String title, Function callback) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Tổng điểm: $point'),
-              ],
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Xác nhận'),
-              onPressed: () => callback(),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
