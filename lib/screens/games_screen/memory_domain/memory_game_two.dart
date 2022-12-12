@@ -106,6 +106,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   }
 
   void handleCorrectAnswer(String userSelectedCards) {
+    _showToast("Chính xác!", Colors.green);
     setState(() {
       selectedCards.addAll([userSelectedCards, ""]);
       point += 500;
@@ -114,11 +115,16 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   }
 
   void handleWrongAnswer() {
+    _showToast("Sai rồi! Chơi lại nhé", Colors.red);
     calculateBonusPoints();
     if (trial >= MAX_TRIALS) {
       setState(() {
         selectedCards = [""]; // Reset selected cards
         endGame = true;
+      });
+
+      _showMyDialog("Kết thúc", () {
+        Navigator.of(context).pop();
       });
       return;
     }
@@ -258,5 +264,47 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
             ],
           ),
         ));
+  }
+
+  Future<void> _showMyDialog(String title, Function callback) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Tổng điểm: $point'),
+              ],
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Xác nhận'),
+              onPressed: () => callback(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showToast(String content, Color snackBarColor) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        backgroundColor: snackBarColor,
+        content: Text(content),
+        width: 280.0, // Width of the SnackBar.
+        duration: const Duration(milliseconds: 1200),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+    );
   }
 }
