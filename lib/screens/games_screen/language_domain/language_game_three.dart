@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:brain_training/constants/enum.dart';
 import 'package:brain_training/constants/base_url.dart';
 import 'package:brain_training/constants/color.dart';
+import 'package:brain_training/widget/toast.dart';
 
 class LanguageGameThree extends StatefulWidget {
   const LanguageGameThree({super.key});
@@ -20,6 +21,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   Duration answerDuration = const Duration();
   Timer? countdownTimer;
+  late Toast toast;
 
   TextEditingController controller = TextEditingController();
   late Future<String> firstCharacter;
@@ -86,7 +88,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
     bool isValidWord = await checkValidWord(checkingWord);
     if (isValidWord) {
-      _showToast('Chính xác', Colors.green);
+      toast.show('Chính xác', Colors.green, 1500);
       _answer.add(userAnswer);
       setState(() {
         _point += pointPerCorrectAnswer;
@@ -94,7 +96,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
         answerDuration = Duration(seconds: answerDurationInSeconds);
       });
     } else {
-      _showToast('Không hợp lệ', Colors.red);
+      toast.show('Không hợp lệ', Colors.red, 1500);
     }
 
     controller.text = '';
@@ -120,6 +122,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
   void initState() {
     super.initState();
 
+    toast = Toast(context: context);
     firstCharacter = fetchRandomCharacter();
     startTimer();
   }
@@ -242,22 +245,6 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
           ],
         );
       },
-    );
-  }
-
-  void _showToast(String content, Color snackBarColor) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: snackBarColor,
-        content: Text(content),
-        width: 280.0, // Width of the SnackBar.
-        duration: const Duration(milliseconds: 1500),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
     );
   }
 }
