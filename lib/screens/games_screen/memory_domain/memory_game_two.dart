@@ -6,14 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:stack/stack.dart' as StackDS;
 
-class MemoryGame2 extends StatefulWidget {
-  const MemoryGame2({Key? key}) : super(key: key);
+class MemoryGameTwo extends StatefulWidget {
+  const MemoryGameTwo({Key? key}) : super(key: key);
 
   @override
-  State<MemoryGame2> createState() => _MemoryGame2State();
+  State<MemoryGameTwo> createState() => _MemoryGameTwoState();
 }
 
-class _MemoryGame2State extends State<MemoryGame2> {
+class _MemoryGameTwoState extends State<MemoryGameTwo> {
   final int MAX_TRIALS = 3; // Number of trials for a game session
   final int STARTING_CARDS = 3; // Number of cards when starting a game session
 

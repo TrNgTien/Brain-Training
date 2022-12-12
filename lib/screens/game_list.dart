@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:brain_training/screens/games_screen/math_domain/game_2.dart';
 import 'package:brain_training/screens/games_screen/math_domain/math_game_one.dart';
 import 'package:brain_training/screens/games_screen/memory_domain/game-1.dart';
+import 'package:brain_training/screens/games_screen/memory_domain/memory_game_two.dart';
 import 'package:brain_training/screens/games_screen/language_domain/language_game_one.dart';
 import 'package:brain_training/screens/games_screen/language_domain/language_game_four.dart';
 import 'package:brain_training/screens/games_screen/language_domain/language_game_three.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/widget/bottom_nav.dart';
 
-import 'memory_domain/memory_game_2.dart';
 import 'memory_domain/memory_game_3.dart';
 
 class GameList extends StatefulWidget {
@@ -248,7 +248,7 @@ class _GameListState extends State<GameList> {
             ),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const MemoryGame2()));
+                  builder: (BuildContext context) => const MemoryGameTwo()));
             },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
