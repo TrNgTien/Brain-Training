@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -15,23 +14,25 @@ class MemoryGame2 extends StatefulWidget {
 }
 
 class _MemoryGame2State extends State<MemoryGame2> {
-  final int MAX_ROUNDS = 3; // Number of rounds for a game session
+  final int MAX_TRIALS = 3; // Number of trials for a game session
   final int STARTING_CARDS = 3; // Number of cards when starting a game session
-  final random = Random();
 
   StackDS.Stack<List<String>> _stackRounds = StackDS.Stack();
-  List<String> list = []; // Total card list in 1 round
+  List<String> list = []; // Total card list in 1 trial
   List<String> initCards = []; // Rendered cards for user to play
   List<String> selectedCards = [""]; // User's selection
 
   int point = 0;
-  int round = 1;
+  int trial = 1;
+  int level = 0;
+  bool endGame = false;
 
   Future<List<List<String>>> _loadImagesPath() async {
     final manifestContent = await rootBundle.loadString('AssetManifest.json');
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
     List<List<String>> imagesAssetPath = [];
 
+    // Image handler
     final animalImagesPath = manifestMap.keys
         .where((String key) => key.contains('images/'))
         .where((String key) => key.contains('Animal/'))
@@ -61,16 +62,97 @@ class _MemoryGame2State extends State<MemoryGame2> {
 
   Future _initImages() async {
     final imagesAssetPath = await _loadImagesPath();
-    // From the assets, get random MAX_ROUNDS sources for a game
-    final imagesForThisGame = imagesAssetPath.sample(MAX_ROUNDS);
+    // From the assets, get random MAX_TRIALS sources for a game
+    final imagesForThisGame = imagesAssetPath.sample(MAX_TRIALS);
 
-    for (int i = 0; i < MAX_ROUNDS; i++) {
+    for (int i = 0; i < MAX_TRIALS; i++) {
       _stackRounds.push(imagesForThisGame[i]);
     }
 
+    setupGameCards();
+  }
+
+  void setupGameCards() {
     setState(() {
+      selectedCards = [""]; // Reset selected cards
       list = _stackRounds.pop();
       initCards = list.sample(STARTING_CARDS);
+      list.removeWhere((card) => initCards.contains(card));
+    });
+  }
+
+  // Logic handler
+  void handleButtonPress() {
+    // Start game
+    if (selectedCards.length == 1) {
+      setState(() {
+        selectedCards.add("");
+      });
+
+      nextLevel();
+      return;
+    }
+    // Check result
+    checkUserAnswer();
+  }
+
+  void checkUserAnswer() {
+    String userSelectedCards = selectedCards.removeLast();
+    if (!selectedCards.contains(userSelectedCards)) {
+      handleCorrectAnswer(userSelectedCards);
+    } else {
+      handleWrongAnswer();
+    }
+  }
+
+  void handleCorrectAnswer(String userSelectedCards) {
+    setState(() {
+      selectedCards.addAll([userSelectedCards, ""]);
+      point += 500;
+    });
+    nextLevel();
+  }
+
+  void handleWrongAnswer() {
+    calculateBonusPoints();
+    if (trial >= MAX_TRIALS) {
+      setState(() {
+        selectedCards = [""]; // Reset selected cards
+        endGame = true;
+      });
+      return;
+    }
+    nextTrial();
+  }
+
+  void calculateBonusPoints() {
+    int weight = 100 * trial;
+
+    setState(() {
+      point += ((selectedCards.length - 1) * weight);
+    });
+  }
+
+  void nextLevel() {
+    String newCard = list.sample(1).first;
+    setState(() {
+      level++;
+
+      // Remove this card from the list
+      list.remove(newCard);
+      // Add 1 random card
+      initCards.add(newCard);
+      // Shuffle the initCards for new turn
+      initCards.shuffle();
+    });
+  }
+
+  void nextTrial() {
+    setupGameCards();
+
+    setState(() {
+      level = 0;
+      trial++;
     });
   }
 
@@ -84,7 +166,7 @@ class _MemoryGame2State extends State<MemoryGame2> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Màn " + round.toString()),
+          title: Text("Lần chơi " + trial.toString()),
           backgroundColor: greenPastel,
           foregroundColor: darkTextColor,
         ),
@@ -104,7 +186,9 @@ class _MemoryGame2State extends State<MemoryGame2> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      "Hãy chọn 1 hình ảnh mà bạn muốn ghi nhớ để bắt đầu trò chơi",
+                      selectedCards.length == 1 && !endGame
+                          ? "Hãy chọn 1 hình ảnh mà bạn muốn ghi nhớ để bắt đầu lần chơi"
+                          : "Hãy chọn những hình ảnh mà bạn chưa chọn trước đó",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           // color: primaryOrange,
@@ -114,11 +198,12 @@ class _MemoryGame2State extends State<MemoryGame2> {
                   ])),
               initCards.isNotEmpty
                   ? GridView.count(
+                      primary: false,
                       crossAxisCount: STARTING_CARDS,
                       shrinkWrap: true,
                       children: initCards
                           .map((e) => Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5.0),
+                              padding: EdgeInsets.all(10.0),
                               child: Container(
                                   decoration: selectedCards.last == e
                                       ? BoxDecoration(
@@ -143,23 +228,31 @@ class _MemoryGame2State extends State<MemoryGame2> {
                                               fit: BoxFit.scaleDown,
                                               image: AssetImage(e),
                                               child: InkWell(
-                                                onTap: () {
-                                                  print(selectedCards);
-                                                  setState(() {
-                                                    selectedCards.removeLast();
-                                                    selectedCards.add(e);
-                                                  });
-                                                },
+                                                onTap: !endGame
+                                                    ? () {
+                                                        setState(() {
+                                                          selectedCards
+                                                              .removeLast();
+                                                          selectedCards.add(e);
+                                                        });
+                                                      }
+                                                    : null,
                                               )))))))
                           .toList(),
                     )
                   : Container(),
               const SizedBox(height: 60),
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: selectedCards.last == "" || endGame
+                      ? null
+                      : handleButtonPress,
                   child: Padding(
                       padding: EdgeInsets.all(10),
-                      child: Text("Bắt đầu", style: TextStyle(fontSize: 24))),
+                      child: Text(
+                          selectedCards.length == 1 && !endGame
+                              ? "Bắt đầu"
+                              : "Kiểm tra",
+                          style: TextStyle(fontSize: 24))),
                   style:
                       ElevatedButton.styleFrom(backgroundColor: primaryOrange))
             ],
