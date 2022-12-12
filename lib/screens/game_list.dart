@@ -8,7 +8,7 @@ import 'package:brain_training/screens/games_screen/language_domain/language_gam
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/widget/bottom_nav.dart';
 
-import 'memory_domain/memory_game_3.dart';
+import 'games_screen/memory_domain/memory_game_3.dart';
 
 class GameList extends StatefulWidget {
   final domainName;
