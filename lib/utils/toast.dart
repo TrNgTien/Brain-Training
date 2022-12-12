@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:brain_training/constants/enum.dart';
+import 'dart:io' show Platform;
 
 class Toast {
   const Toast({required this.context});
@@ -21,7 +22,9 @@ class Toast {
           ),
           margin: position == ToastPosition.top
               ? EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height - 180,
+                  bottom: Platform.isIOS
+                      ? MediaQuery.of(context).size.height - 180
+                      : MediaQuery.of(context).size.height - 120,
                   right: 20,
                   left: 20)
               : EdgeInsets.symmetric(horizontal: 20)),
