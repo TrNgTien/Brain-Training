@@ -6,8 +6,8 @@ import 'dart:math';
 import 'package:brain_training/constants/enum.dart';
 import 'package:brain_training/constants/base_url.dart';
 import 'package:brain_training/constants/color.dart';
-import 'package:brain_training/widget/toast.dart';
-import 'package:brain_training/widget/custom_dialog.dart';
+import 'package:brain_training/utils/toast.dart';
+import 'package:brain_training/utils/custom_dialog.dart';
 
 class LanguageGameThree extends StatefulWidget {
   const LanguageGameThree({super.key});

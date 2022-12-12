@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:stack/stack.dart' as StackDS;
-import 'package:brain_training/widget/toast.dart';
-import 'package:brain_training/widget/custom_dialog.dart';
+import 'package:brain_training/utils/toast.dart';
+import 'package:brain_training/utils/custom_dialog.dart';
 
 class MemoryGameTwo extends StatefulWidget {
   const MemoryGameTwo({Key? key}) : super(key: key);
