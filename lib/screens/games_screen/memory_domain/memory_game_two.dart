@@ -19,6 +19,7 @@ class MemoryGameTwo extends StatefulWidget {
 class _MemoryGameTwoState extends State<MemoryGameTwo> {
   final int MAX_TRIALS = 3; // Number of trials for a game session
   final int STARTING_CARDS = 3; // Number of cards when starting a game session
+  List<List<String>> imagesAssetPath = [];
 
   StackDS.Stack<List<String>> _stackRounds = StackDS.Stack();
   List<String> list = []; // Total card list in 1 trial
@@ -33,41 +34,45 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   late Toast toast;
   late CustomDialog dialog;
 
-  Future<List<List<String>>> _loadImagesPath() async {
+  Future<void> _loadImages() async {
+    await _loadAssetsFiles();
+    _initImages();
+  }
+
+  Future<void> _loadAssetsFiles() async {
     final manifestContent = await rootBundle.loadString('AssetManifest.json');
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-    List<List<String>> imagesAssetPath = [];
 
     // Image handler
     final animalImagesPath = manifestMap.keys
         .where((String key) => key.contains('images/'))
         .where((String key) => key.contains('Animal/'))
         .toList();
-    imagesAssetPath.add(animalImagesPath);
 
     final transportationImagesPath = manifestMap.keys
         .where((String key) => key.contains('images/'))
         .where((String key) => key.contains('Transportation/'))
         .toList();
-    imagesAssetPath.add(transportationImagesPath);
 
     final fruitVegetableImagesPath = manifestMap.keys
         .where((String key) => key.contains('images/'))
         .where((String key) => key.contains('FruitVegetable/'))
         .toList();
-    imagesAssetPath.add(fruitVegetableImagesPath);
 
     final householdItemImagesPath = manifestMap.keys
         .where((String key) => key.contains('images/'))
         .where((String key) => key.contains('HouseholdItem/'))
         .toList();
-    imagesAssetPath.add(householdItemImagesPath);
 
-    return imagesAssetPath;
+    imagesAssetPath.addAll([
+      animalImagesPath,
+      transportationImagesPath,
+      fruitVegetableImagesPath,
+      householdItemImagesPath,
+    ]);
   }
 
-  Future _initImages() async {
-    final imagesAssetPath = await _loadImagesPath();
+  void _initImages() {
     // From the assets, get random MAX_TRIALS sources for a game
     final imagesForThisGame = imagesAssetPath.sample(MAX_TRIALS);
 
@@ -89,17 +94,32 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
 
   // Logic handler
   void handleButtonPress() {
-    // Start game
-    if (selectedCards.length == 1) {
+    if (endGame) {
+      // Play again
+      restartGame();
+    } else if (selectedCards.length == 1) {
+      // Start trial
       setState(() {
         selectedCards.add("");
       });
 
       nextLevel();
-      return;
+    } else {
+      // Check result
+      checkUserAnswer();
     }
-    // Check result
-    checkUserAnswer();
+  }
+
+  void restartGame() {
+    // Reset all game data
+    setState(() {
+      point = 0;
+      trial = 1;
+      level = 0;
+      endGame = false;
+    });
+    // Initialize new game images
+    _initImages();
   }
 
   void checkUserAnswer() {
@@ -183,7 +203,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
     toast = Toast(context: context);
     dialog = CustomDialog(context: context);
 
-    _initImages();
+    _loadImages();
   }
 
   @override
@@ -267,14 +287,16 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
                   : Container(),
               const SizedBox(height: 60),
               ElevatedButton(
-                  onPressed: selectedCards.last == "" || endGame
+                  onPressed: selectedCards.last == "" && !endGame
                       ? null
                       : handleButtonPress,
                   child: Padding(
                       padding: EdgeInsets.all(10),
                       child: Text(
-                          selectedCards.length == 1 && !endGame
-                              ? "Bắt đầu"
+                          selectedCards.length == 1
+                              ? !endGame
+                                  ? "Bắt đầu"
+                                  : "Chơi lại"
                               : "Kiểm tra",
                           style: TextStyle(fontSize: 24))),
                   style:
