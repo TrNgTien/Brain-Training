@@ -40,6 +40,7 @@ dependencies:
   function_tree: ^0.8.13
   characters: ^1.2.1
   http: ^0.13.5
+  stack: ^0.2.1
 
 dev_dependencies:
   flutter_test:
