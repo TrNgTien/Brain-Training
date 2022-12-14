@@ -4,8 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:brain_training/constants/color.dart';
-import 'package:flutter_svg/svg.dart';
-import "package:brain_training/constants/icons.dart";
+import 'package:brain_training/utils/custom_dialog.dart';
 
 class Game2 extends StatefulWidget {
   const Game2({super.key});
@@ -18,6 +17,8 @@ class _Game2State extends State<Game2> {
   Timer? countdownTimer;
   String mathGamePath2 = "lib/constants/math_game_2.json";
   Duration timerCounter = const Duration(seconds: 9);
+  late CustomDialog dialog;
+
   List gridDataTen = [];
   List gridDataHundred = [];
   List gridDataThousand = [];
@@ -34,6 +35,7 @@ class _Game2State extends State<Game2> {
   @override
   void initState() {
     super.initState();
+    dialog = CustomDialog(context: context);
     readJson();
     startTimer();
   }
@@ -74,20 +76,53 @@ class _Game2State extends State<Game2> {
     int timer = currentGridData[0]["duration"] - 1;
     calculateScore();
     countdownTimer!.cancel();
-    _showMyDialog(
-        "Kết thúc",
-        "Số vòng chơi vượt qua: $amountOfCorrectAnswers / ${currentGridData.length}",
-        "Tổng điểm: $totalScore", () {
-      Navigator.of(context).pop();
-      setState(() {
-        currentIndexing = 0;
-        currentRound = 1;
-        currentScore = 0;
-        timerCounter = Duration(seconds: timer);
-        clickedOptions = [];
-      });
-      startTimer();
-    });
+    dialog.show(
+        Text("Kết Thúc",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.red, fontSize: 40, fontWeight: FontWeight.w600)),
+        SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(
+                "Số vòng chơi vượt qua: $amountOfCorrectAnswers / ${currentGridData.length}",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Tổng điểm: $totalScore",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        ),
+        [
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.only(left: 50, right: 50),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              color: orangePastel,
+            ),
+            child: TextButton(
+              child: const Text('Chơi lại',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  currentIndexing = 0;
+                  currentRound = 1;
+                  currentScore = 0;
+                  timerCounter = Duration(seconds: timer);
+                  clickedOptions = [];
+                });
+                startTimer();
+              },
+            ),
+          )
+        ]);
   }
 
   void setCountDown() {
@@ -129,54 +164,6 @@ class _Game2State extends State<Game2> {
         timerCounter = Duration(seconds: seconds);
       }
     });
-  }
-
-  Future<void> _showMyDialog(String title, String content, String totalScore,
-      Function callback) async {
-    return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => AlertDialog(
-              title: Text(title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 40,
-                      fontWeight: FontWeight.w600)),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      content,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      totalScore,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-              actionsAlignment: MainAxisAlignment.center,
-              actions: <Widget>[
-                Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  padding: const EdgeInsets.only(left: 50, right: 50),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                    color: orangePastel,
-                  ),
-                  child: TextButton(
-                    child: const Text('Chơi lại',
-                        style: TextStyle(fontSize: 20, color: Colors.white)),
-                    onPressed: () => callback(),
-                  ),
-                )
-              ],
-            ));
   }
 
   Future<void> readJson() async {
@@ -318,20 +305,55 @@ class _Game2State extends State<Game2> {
             clickedOptions = [];
           });
           calculateScore();
-          _showMyDialog(
-              "Kết thúc",
-              "Số vòng chơi vượt qua: $amountOfCorrectAnswers / ${currentGridData.length}",
-              "Tổng điểm của vòng chơi: $totalScore", () {
-            Navigator.of(context).pop();
-            setState(() {
-              currentIndexing = 0;
-              currentRound = 1;
-              currentGridData = gridDataThousand;
-              timerCounter = Duration(seconds: timer);
-              clickedOptions = [];
-            });
-            startTimer();
-          });
+          dialog.show(
+              Text("Kết Thúc",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w600)),
+              SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                      "Số vòng chơi vượt qua: $amountOfCorrectAnswers / ${currentGridData.length}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      "Tổng điểm của vòng chơi: $totalScore",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+              [
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(left: 50, right: 50),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                    color: orangePastel,
+                  ),
+                  child: TextButton(
+                    child: const Text('Chơi lại',
+                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        currentIndexing = 0;
+                        currentRound = 1;
+                        currentGridData = gridDataThousand;
+                        timerCounter = Duration(seconds: timer);
+                        clickedOptions = [];
+                      });
+                      startTimer();
+                    },
+                  ),
+                )
+              ]);
         } else {
           if (clickedOptions[0] + clickedOptions[1] == 1000) {
             setState(() {

@@ -14,9 +14,15 @@ class Clock extends StatelessWidget {
         style: const TextStyle(
             fontWeight: FontWeight.w700, color: Colors.red, fontSize: 20),
       );
+    } else if (seconds >= 100) {
+      return Text(
+        '$seconds',
+        style: const TextStyle(
+            fontWeight: FontWeight.w700, color: darkTextColor, fontSize: 20),
+      );
     } else {
       return Text(
-        '00:${seconds <= 9 ? '0$seconds' : '$seconds'}',
+        '${seconds <= 9 ? '00:0$seconds' : '00:$seconds'}',
         style: const TextStyle(
             fontWeight: FontWeight.w700, color: darkTextColor, fontSize: 20),
       );

@@ -108,22 +108,44 @@ class _Game1State extends State<Game1> {
       }
     } else {
       dialog.show(
-          titleWidget: Text("Kết thúc"),
-          contentWidget: SingleChildScrollView(
+          Text("Kết Thúc",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600)),
+          SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("Điểm: "),
-                Text("Điểm thưởng: "),
-                Text("Thời gian trả lời:giây"),
-                Text("Tổng điểm: "),
+                Text(
+                  "Tổng điểm: $score",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
               ],
             ),
           ),
-          actionWidget: [
-            TextButton(
-              child: const Text('Xác nhận'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+          [
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(left: 50, right: 50),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                color: orangePastel,
+              ),
+              child: TextButton(
+                child: const Text('Chơi lại',
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                onPressed: () {
+                  randomList = [];
+                  locations = [];
+                  errorTimes = 2;
+                  currentLevel = 0;
+                  Navigator.of(context).pop();
+                  startTimer();
+                },
+              ),
+            )
           ]);
     }
   }
@@ -188,7 +210,7 @@ class _Game1State extends State<Game1> {
                     ),
                     if (matrixData.isNotEmpty)
                       Text(
-                        "Cấp Độ: ${matrixData[currentLevel]["vTile"]} * ${matrixData[currentLevel]["hTile"]}",
+                        "Cấp Độ: ${matrixData[currentLevel]["hTile"]} * ${matrixData[currentLevel]["vTile"]}",
                         style: TextStyle(
                             color: primaryOrange,
                             fontSize: 30,
@@ -220,7 +242,7 @@ class _Game1State extends State<Game1> {
               matrixData.isNotEmpty ? matrixData[currentLevel]["hTile"] : 1,
           mainAxisSpacing: 0,
           crossAxisSpacing: 0,
-          childAspectRatio: 1 / 1,
+          childAspectRatio: currentLevel == 0 ? 2 / 1 : 1 / 1,
         ),
         itemCount: matrixData.isNotEmpty
             ? matrixData[currentLevel]["vTile"] *

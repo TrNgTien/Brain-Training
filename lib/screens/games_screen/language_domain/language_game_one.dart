@@ -1,10 +1,13 @@
 import 'dart:math';
 import 'package:brain_training/constants/color.dart';
+import 'package:brain_training/widget/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:brain_training/utils/custom_dialog.dart';
+import 'package:brain_training/utils/toast.dart';
 
 class LanguageGameOne extends StatefulWidget {
   const LanguageGameOne({super.key});
@@ -25,10 +28,14 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
   TextEditingController controllerInput = TextEditingController();
   final String endpointUrl = 'https://mobile.iuweb.online/api/language';
   String listChar = "lib/constants/language_1.json";
+  late CustomDialog dialog;
+  late Toast toast;
 
   @override
   void initState() {
     super.initState();
+    toast = Toast(context: context);
+    dialog = CustomDialog(context: context);
     readJson();
     startTimer();
   }
@@ -59,18 +66,48 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
 
   void setCancelTimer() {
     countdownTimer!.cancel();
-    _showMyDialog("Kết thúc", "Điểm: $score", () {
-      Navigator.of(context).pop();
-      setState(() {
-        myDuration = const Duration(seconds: 299);
-        score = 0;
-        currentIndex = Random().nextInt(charList.length);
-        starterChar = charList[currentIndex];
-        wordInput = "";
-        controllerInput.clear();
-        startTimer();
-      });
-    });
+    dialog.show(
+        Text("Kết Thúc",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.red, fontSize: 40, fontWeight: FontWeight.w600)),
+        SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(
+                "Điểm: $score",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        ),
+        [
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.only(left: 50, right: 50),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              color: orangePastel,
+            ),
+            child: TextButton(
+              child: const Text('Chơi lại',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  myDuration = const Duration(seconds: 299);
+                  score = 0;
+                  currentIndex = Random().nextInt(charList.length);
+                  starterChar = charList[currentIndex];
+                  wordInput = "";
+                  controllerInput.clear();
+                  startTimer();
+                });
+              },
+            ),
+          )
+        ]);
   }
 
   Future<bool> checkValidWord(String value) async {
@@ -98,6 +135,7 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
     String checkingWord = "$starterChar$userAnswer";
     bool isValidWord = await checkValidWord(checkingWord);
     if (isValidWord) {
+      toast.show('Chính xác, tiếp tục nào!!', Colors.green);
       if (checkingWord.length == 2) {
         setState(() {
           score += 200;
@@ -123,6 +161,8 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
           score += 700;
         });
       }
+    } else {
+      toast.show('Không hợp lệ', Colors.red);
     }
     setState(() {
       controllerInput.clear();
@@ -134,30 +174,6 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
     if (wordInput.isNotEmpty) {
       handleClickCheck();
     }
-  }
-
-  Future<void> _showMyDialog(
-      String title, String content, Function callback) async {
-    return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => AlertDialog(
-              title: Text(title),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(content),
-                  ],
-                ),
-              ),
-              actionsAlignment: MainAxisAlignment.center,
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Chơi lại'),
-                  onPressed: () => callback(),
-                ),
-              ],
-            ));
   }
 
   @override
@@ -176,18 +192,23 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
                   top: 30,
                   bottom: 20,
                 ),
-                child: Text(
-                    "Thời gian còn lại: ${myDuration.inSeconds} (5 phút)",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 20)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Clock(seconds: myDuration.inSeconds),
+                    Text(" (5 phút)",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 20)),
+                  ],
+                ),
               ),
               Text("Điểm: $score",
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
+                      fontWeight: FontWeight.w700,
+                      color: brownColor,
+                      fontSize: 30)),
               const Padding(
                 padding: EdgeInsets.only(
                   top: 30,
@@ -206,8 +227,8 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
                         ? "$starterChar _____"
                         : "$starterChar$wordInput",
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        color: brownColor,
                         fontSize: 30)),
               ),
               SizedBox(
@@ -225,6 +246,15 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(30)),
+                        borderSide: const BorderSide(
+                          color: brownColor,
+                        ),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        borderSide: const BorderSide(
+                          color: brownColor,
+                        ),
                       ),
                       hintText: "Nhập chữ cái thích hợp",
                     ),
@@ -233,11 +263,20 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 10),
-                child: ElevatedButton(
-                    onPressed: () {
-                      handleCheckResult();
-                    },
-                    child: const Text("Kiểm tra")),
+                child: Container(
+                    child: Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(left: 50, right: 50),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                    color: grayColor,
+                  ),
+                  child: TextButton(
+                    child: const Text('Kiểm tra',
+                        style: TextStyle(fontSize: 20, color: darkTextColor)),
+                    onPressed: () => handleCheckResult(),
+                  ),
+                )),
               ),
             ],
           ),
