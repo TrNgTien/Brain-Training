@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:brain_training/constants/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +29,9 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   int trial = 1;
   int level = 0;
   bool endGame = false;
+
+  bool _needScroll = false;
+  ScrollController _scrollController = ScrollController();
 
   late Toast toast;
   late CustomDialog dialog;
@@ -132,8 +134,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   }
 
   void handleCorrectAnswer(String userSelectedCards) {
-    toast.show("Chính xác!", Colors.green,
-        snackBarDuration: 1000, position: ToastPosition.top);
+    toast.show("Chính xác!", Colors.green, snackBarDuration: 1000);
     setState(() {
       selectedCards.addAll([userSelectedCards, ""]);
       point += 500;
@@ -142,8 +143,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   }
 
   void handleWrongAnswer() {
-    toast.show("Sai rồi! Chơi lại nhé", Colors.red,
-        snackBarDuration: 1000, position: ToastPosition.top);
+    toast.show("Sai rồi! Chơi lại nhé", Colors.red, snackBarDuration: 1000);
     calculateBonusPoints();
     if (trial >= MAX_TRIALS) {
       setState(() {
@@ -151,14 +151,11 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
         endGame = true;
       });
 
-      dialog.show(
-          titleWidget: Text("kết thúc"),
-          contentWidget: Text("Tổng điểm: $point"),
-          actionWidget: [
-            TextButton(
-                child: const Text('Xác nhận'),
-                onPressed: () => Navigator.of(context).pop())
-          ]);
+      dialog.show(Text("kết thúc"), Text("Tổng điểm: $point"), [
+        TextButton(
+            child: const Text('Xác nhận'),
+            onPressed: () => Navigator.of(context).pop())
+      ]);
       return;
     }
     nextTrial();
@@ -184,6 +181,19 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
       // Shuffle the initCards for new turn
       initCards.shuffle();
     });
+    _needScroll = true;
+  }
+
+  void _scrollToEnd() {
+    // Auto scroll to the end of the list
+    if (_scrollController.hasClients) {
+      final position = _scrollController.position.maxScrollExtent;
+      _scrollController.animateTo(
+        position,
+        duration: Duration(milliseconds: 800),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   void nextTrial() {
@@ -208,6 +218,11 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
 
   @override
   Widget build(BuildContext context) {
+    if (_needScroll) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
+      _needScroll = false;
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Lần chơi " + trial.toString()),
@@ -215,6 +230,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
           foregroundColor: darkTextColor,
         ),
         body: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -285,7 +301,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
                           .toList(),
                     )
                   : Container(),
-              const SizedBox(height: 60),
+              // const SizedBox(height: 30),
               ElevatedButton(
                   onPressed: selectedCards.last == "" && !endGame
                       ? null
@@ -300,7 +316,8 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
                               : "Kiểm tra",
                           style: TextStyle(fontSize: 24))),
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: primaryOrange))
+                      ElevatedButton.styleFrom(backgroundColor: primaryOrange)),
+              const SizedBox(height: 100),
             ],
           ),
         ));

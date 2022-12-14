@@ -114,17 +114,14 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   void handleStatusChange(GameStatus status) {
     if (status == GameStatus.end) {
-      dialog.show(
-          titleWidget: Text('Kết thúc'),
-          contentWidget: Text('Tổng điểm: $_point'),
-          actionWidget: [
-            TextButton(
-              child: const Text('Xác nhận'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
-          ]);
+      dialog.show(Text('Kết thúc'), Text('Tổng điểm: $_point'), [
+        TextButton(
+          child: const Text('Xác nhận'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        )
+      ]);
     }
   }
 
