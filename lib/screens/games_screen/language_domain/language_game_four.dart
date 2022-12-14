@@ -169,8 +169,8 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
   void showEndGameDialog() {
     dialog.show(
-        titleWidget: Text("Kết thúc"),
-        contentWidget: SingleChildScrollView(
+        Text("Kết thúc"),
+        SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
               Text("Điểm: $_point"),
@@ -180,7 +180,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
             ],
           ),
         ),
-        actionWidget: [
+        [
           TextButton(
             child: const Text('Xác nhận'),
             onPressed: () => Navigator.of(context).pop(),
