@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/main.dart';
+import "package:brain_training/constants/icons.dart";
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,9 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const facebookIcon = 'lib/assets/icons/facebook_ic.svg';
-    const googleIcon = 'lib/assets/icons/google_ic.svg';
-
     return Scaffold(
         appBar: AppBar(
           elevation: 0,

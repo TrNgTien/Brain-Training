@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:brain_training/widget/bottom_nav.dart';
 import 'package:brain_training/widget/splash_screen.dart';
 import 'package:brain_training/constants/color.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,9 +34,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> listDomain = ["Trí nhớ", "Nhận thức", "Ngôn ngữ", "Toán học"];
-  String playingIcon = "lib/assets/icons/playing_ic.svg";
-  String profileIcon = "lib/assets/icons/profile_ic.svg";
-  String rankingIcon = "lib/assets/icons/ranking_ic.svg";
   @override
   Widget build(BuildContext context) {
     return Scaffold(

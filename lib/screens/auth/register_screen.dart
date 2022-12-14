@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/main.dart';
 import 'package:brain_training/widget/logo_app.dart';
+import "package:brain_training/constants/icons.dart";
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,8 +15,6 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
-    const facebookIcon = 'lib/assets/icons/facebook_ic.svg';
-    const googleIcon = 'lib/assets/icons/google_ic.svg';
     return Scaffold(
         appBar: AppBar(
           elevation: 0,

@@ -13,10 +13,10 @@ class LanguageGameFour extends StatefulWidget {
 }
 
 class _LanguageGameFourState extends State<LanguageGameFour> {
-  final String languageGameFourPath = "lib/constants/language_game.json";
   final String jsonKey = "languageGame4";
   final int questionDurationInSecond = 60;
   final int numberOfQuestions = 10;
+  String languageGameFourPath = "lib/constants/language_game.json";
 
   late CustomDialog dialog;
   Duration questionDuration = const Duration();
