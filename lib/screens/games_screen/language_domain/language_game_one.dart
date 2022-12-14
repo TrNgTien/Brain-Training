@@ -14,7 +14,6 @@ class LanguageGameOne extends StatefulWidget {
 }
 
 class _LanguageGameOneState extends State<LanguageGameOne> {
-  String listChar = "lib/constants/language-1.json";
   String starterChar = "";
   String wordInput = "";
   int statusCode = 0;
@@ -25,6 +24,7 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
   Duration myDuration = const Duration(seconds: 299);
   TextEditingController controllerInput = TextEditingController();
   final String endpointUrl = 'https://mobile.iuweb.online/api/language';
+  String listChar = "lib/constants/language_1.json";
 
   @override
   void initState() {

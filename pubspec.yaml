@@ -41,6 +41,7 @@ dependencies:
   characters: ^1.2.1
   http: ^0.13.5
   stack: ^0.2.1
+  quiver: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -74,8 +75,9 @@ flutter:
   assets:
     - lib/constants/math_game.json
     - lib/constants/language_game.json
-    - lib/constants/math-game-2.json
-    - lib/constants/language-1.json
+    - lib/constants/math_game_2.json
+    - lib/constants/language_1.json
+    - lib/constants/memory_game_1.json
     - lib/assets/images/
     - lib/assets/images/Animal/
     - lib/assets/images/Transportation/

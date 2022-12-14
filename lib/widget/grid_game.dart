@@ -2,8 +2,8 @@ import 'package:brain_training/screens/ranking_screen/ranking_list.dart';
 import 'package:flutter/material.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../screens/game_list.dart';
+import "package:brain_training/constants/icons.dart";
+import 'package:brain_training/screens/game_list.dart';
 
 class GridGame extends StatelessWidget {
   final context;
@@ -22,10 +22,6 @@ class GridGame extends StatelessWidget {
   }
 
   GridView gridDomain(List listDomain, BuildContext context) {
-    String attentionIcon = "lib/assets/icons/attention_ic.svg";
-    String languageIcon = "lib/assets/icons/language_ic.svg";
-    String mathIcon = "lib/assets/icons/math_ic.svg";
-    String memoryIcon = "lib/assets/icons/memory_ic.svg";
     Color? backgroundColor(String domainType) {
       switch (domainType) {
         case "Trí nhớ":
