@@ -3,6 +3,7 @@ import 'package:brain_training/screens/profile_screen/profile_screen.dart';
 import 'package:brain_training/screens/ranking_screen/ranking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import "package:brain_training/constants/icons.dart";
 
 class BottomNav extends StatefulWidget {
   final Color? colorBackground;
@@ -19,9 +20,6 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-  String playingIcon = "lib/assets/icons/playing_ic.svg";
-  String profileIcon = "lib/assets/icons/profile_ic.svg";
-  String rankingIcon = "lib/assets/icons/ranking_ic.svg";
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {

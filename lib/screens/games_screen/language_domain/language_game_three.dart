@@ -6,6 +6,8 @@ import 'dart:math';
 import 'package:brain_training/constants/enum.dart';
 import 'package:brain_training/constants/base_url.dart';
 import 'package:brain_training/constants/color.dart';
+import 'package:brain_training/utils/toast.dart';
+import 'package:brain_training/utils/custom_dialog.dart';
 
 class LanguageGameThree extends StatefulWidget {
   const LanguageGameThree({super.key});
@@ -20,6 +22,8 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   Duration answerDuration = const Duration();
   Timer? countdownTimer;
+  late Toast toast;
+  late CustomDialog dialog;
 
   TextEditingController controller = TextEditingController();
   late Future<String> firstCharacter;
@@ -86,7 +90,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
     bool isValidWord = await checkValidWord(checkingWord);
     if (isValidWord) {
-      _showToast('Chính xác', Colors.green);
+      toast.show('Chính xác', Colors.green);
       _answer.add(userAnswer);
       setState(() {
         _point += pointPerCorrectAnswer;
@@ -94,7 +98,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
         answerDuration = Duration(seconds: answerDurationInSeconds);
       });
     } else {
-      _showToast('Không hợp lệ', Colors.red);
+      toast.show('Không hợp lệ', Colors.red);
     }
 
     controller.text = '';
@@ -110,9 +114,14 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   void handleStatusChange(GameStatus status) {
     if (status == GameStatus.end) {
-      _showMyDialog('Kết thúc', () {
-        Navigator.of(context).pop();
-      });
+      dialog.show(Text('Kết thúc'), Text('Tổng điểm: $_point'), [
+        TextButton(
+          child: const Text('Xác nhận'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        )
+      ]);
     }
   }
 
@@ -120,6 +129,8 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
   void initState() {
     super.initState();
 
+    toast = Toast(context: context);
+    dialog = CustomDialog(context: context);
     firstCharacter = fetchRandomCharacter();
     startTimer();
   }
@@ -216,48 +227,6 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
               heightFactor: 22.0, child: CircularProgressIndicator());
         },
       )),
-    );
-  }
-
-  Future<void> _showMyDialog(String title, Function callback) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Tổng điểm: $_point'),
-              ],
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Xác nhận'),
-              onPressed: () => callback(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showToast(String content, Color snackBarColor) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: snackBarColor,
-        content: Text(content),
-        width: 280.0, // Width of the SnackBar.
-        duration: const Duration(milliseconds: 1500),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
     );
   }
 }

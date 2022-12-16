@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:brain_training/constants/enum.dart';
 import 'package:brain_training/utils/helper.dart';
+import 'package:brain_training/utils/custom_dialog.dart';
 
 class LanguageGameFour extends StatefulWidget {
   const LanguageGameFour({Key? key}) : super(key: key);
@@ -12,11 +13,12 @@ class LanguageGameFour extends StatefulWidget {
 }
 
 class _LanguageGameFourState extends State<LanguageGameFour> {
-  final String languageGameFourPath = "lib/constants/language_game.json";
   final String jsonKey = "languageGame4";
   final int questionDurationInSecond = 60;
   final int numberOfQuestions = 10;
+  String languageGameFourPath = "lib/constants/language_game.json";
 
+  late CustomDialog dialog;
   Duration questionDuration = const Duration();
   Timer? countdownTimer;
 
@@ -158,13 +160,32 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
       case GameStatus.end:
         userFinishQuestion();
         calculateBonusPoints();
-        _showMyDialog("Kết thúc", () {
-          Navigator.of(context).pop();
-        });
+        showEndGameDialog();
         break;
       default:
         break;
     }
+  }
+
+  void showEndGameDialog() {
+    dialog.show(
+        Text("Kết thúc"),
+        SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text("Điểm: $_point"),
+              Text("Điểm thưởng: $_bonusPoint"),
+              Text("Thời gian trả lời: $_responseTime giây"),
+              Text("Tổng điểm: ${_point + _bonusPoint}"),
+            ],
+          ),
+        ),
+        [
+          TextButton(
+            child: const Text('Xác nhận'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ]);
   }
 
   // Timer Handler
@@ -197,6 +218,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   @override
   void initState() {
     super.initState();
+    dialog = CustomDialog(context: context);
     readJson(languageGameFourPath, jsonKey).then((wordsList) {
       // Shuffle the questions list
       wordsList.shuffle();
@@ -354,34 +376,5 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
                   onPressedCallback!();
                 },
                 child: Text(char, style: const TextStyle(fontSize: 30)))));
-  }
-
-  Future<void> _showMyDialog(String title, Function callback) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text("Điểm: $_point"),
-                Text("Điểm thưởng: $_bonusPoint"),
-                Text("Thời gian trả lời: $_responseTime giây"),
-                Text("Tổng điểm: ${_point + _bonusPoint}"),
-              ],
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Xác nhận'),
-              onPressed: () => callback(),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
