@@ -334,7 +334,7 @@ class _MemoryGame3State extends State<MemoryGame3> {
   }
 
   Widget ansToggleBtn() {
-    return Ink(
+    return Container(
       width: MediaQuery.of(context).size.width * 0.75,
       height: MediaQuery.of(context).size.height * 0.25,
       child: GridView.count(
