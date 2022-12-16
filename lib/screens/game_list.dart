@@ -1,3 +1,4 @@
+import 'package:brain_training/screens/games_screen/attention_domain/menu_attention_game_two.dart';
 import 'package:flutter/material.dart';
 import 'package:brain_training/screens/games_screen/math_domain/math_game_2.dart';
 import 'package:brain_training/screens/games_screen/math_domain/math_game_one.dart';
@@ -310,7 +311,10 @@ class _GameListState extends State<GameList> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => AttentionGame2Menu()));
+            },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
