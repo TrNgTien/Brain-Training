@@ -1,4 +1,6 @@
-import 'package:brain_training/widget/grid_game.dart';
+import 'package:brain_training/screens/main_menu/MainMenu.dart';
+import 'package:brain_training/screens/profile_screen/profile_screen.dart';
+import 'package:brain_training/screens/ranking_screen/ranking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:brain_training/widget/bottom_nav.dart';
 import 'package:brain_training/widget/splash_screen.dart';
@@ -33,46 +35,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> listDomain = ["Trí nhớ", "Nhận thức", "Ngôn ngữ", "Toán học"];
+  int selectedIndex = 0;
+  List<Widget> widgetOptions = [MainMenu(), RankingScreen(), ProfileScreen()];
+  void _onItemTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          backgroundColor: primaryOrange,
-          automaticallyImplyLeading: false,
-          titleTextStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Chọn lĩnh vực trò chơi",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 40,
-                    color: primaryOrange,
-                    fontWeight: FontWeight.w700,
-                  )),
-              const SizedBox(
-                height: 40,
-              ),
-              GridGame(
-                listDomain: listDomain,
-                context: context,
-                typeView: 'playing',
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: BottomNav(
-          colorBackground: primaryOrange,
-          colorSelectedItem: Colors.black,
-          colorUnselectedItem: Colors.white,
-        ));
+      // appBar: AppBar(
+      //   title: Text(widget.title),
+      //   backgroundColor: primaryOrange,
+      //   automaticallyImplyLeading: false,
+      //   titleTextStyle: const TextStyle(
+      //     color: Colors.white,
+      //     fontSize: 20,
+      //     fontWeight: FontWeight.w700,
+      //   ),
+      // ),
+      body: Center(
+        child: widgetOptions.elementAt(selectedIndex),
+      ),
+      bottomNavigationBar: BottomNav(
+        colorBackground: primaryOrange,
+        colorSelectedItem: Colors.black,
+        colorUnselectedItem: Colors.white,
+        function: (int index) => _onItemTapped(index),
+        selectedIndex: selectedIndex,
+      ),
+    );
   }
 }

@@ -1,6 +1,3 @@
-import 'package:brain_training/main.dart';
-import 'package:brain_training/screens/profile_screen/profile_screen.dart';
-import 'package:brain_training/screens/ranking_screen/ranking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:brain_training/constants/icons.dart";
@@ -9,38 +6,21 @@ class BottomNav extends StatefulWidget {
   final Color? colorBackground;
   final Color? colorUnselectedItem;
   final Color? colorSelectedItem;
+  final Function(int)? function;
+  final int selectedIndex;
   BottomNav(
       {super.key,
       required this.colorBackground,
       required this.colorUnselectedItem,
-      required this.colorSelectedItem});
+      required this.colorSelectedItem,
+      required this.function,
+      required this.selectedIndex});
 
   @override
   State<BottomNav> createState() => _BottomNavState();
 }
 
 class _BottomNavState extends State<BottomNav> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (_selectedIndex == 0) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => const MyHomePage(
-                title: "Brain Training",
-              ),
-          fullscreenDialog: true));
-    } else if (_selectedIndex == 1) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => RankingScreen()));
-    } else if (_selectedIndex == 2) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => ProfileScreen()));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -57,7 +37,7 @@ class _BottomNavState extends State<BottomNav> {
             playingIcon,
             height: 30,
             width: 30,
-            color: _selectedIndex == 0
+            color: widget.selectedIndex == 0
                 ? widget.colorSelectedItem
                 : widget.colorUnselectedItem,
           )),
@@ -69,7 +49,7 @@ class _BottomNavState extends State<BottomNav> {
             rankingIcon,
             height: 30,
             width: 30,
-            color: _selectedIndex == 1
+            color: widget.selectedIndex == 1
                 ? widget.colorSelectedItem
                 : widget.colorUnselectedItem,
           )),
@@ -81,15 +61,15 @@ class _BottomNavState extends State<BottomNav> {
             profileIcon,
             height: 30,
             width: 30,
-            color: _selectedIndex == 2
+            color: widget.colorBackground == 2
                 ? widget.colorSelectedItem
                 : widget.colorUnselectedItem,
           )),
           label: 'Cá nhân',
         ),
       ],
-      currentIndex: _selectedIndex,
-      onTap: _onItemTapped,
+      currentIndex: widget.selectedIndex,
+      onTap: (int index) => widget.function!(index),
     );
   }
 }
