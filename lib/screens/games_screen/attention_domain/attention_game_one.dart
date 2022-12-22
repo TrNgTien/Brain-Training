@@ -31,11 +31,12 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   List<String> imagesAssetPath = [];
   List<String> solutionAssetPath = [];
   List gameData = [];
+  late int currentKey; // ID of image key
+
   int currentQuestion = 0; // order of question
   int point = 0;
 
   bool isCorrect = false;
-  late int currentKey; // ID of question
   late double scaleRatio;
 
   // Timer
@@ -95,20 +96,21 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   // Question Logic
   void nextQuestion() {
     setState(() {
+      isCorrect = false;
       currentQuestion++;
-      currentKey = getCurrentDataIndex(imagesAssetPath[currentQuestion]);
+      currentKey = getCurrentKeyValue(imagesAssetPath[currentQuestion]);
     });
   }
 
   void endGame() {}
 
   // Image & Image Data
-  int getCurrentDataIndex(String imageName) {
+  int getCurrentKeyValue(String imageName) {
     String key = imageName.split("/").last.split(".").first;
-    return int.parse(key) - 1;
+    return int.parse(key);
   }
 
-  Future<void> _initImages() async {
+  Future<int> _initImages() async {
     final manifestContent = await rootBundle.loadString('AssetManifest.json');
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
 
@@ -117,44 +119,48 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
         .where((String key) => key.contains('images/'))
         .where((String key) => key.contains('Attention/'))
         .where((String key) => key.contains('Solution/'))
-        .where((String key) => key.contains('28.png'))
+        .where((String key) => key.contains('.png'))
         .toList();
 
     final attentionImagePath = manifestMap.keys
         .where((String key) => key.contains('images/'))
         .where((String key) => key.contains('Attention/'))
         .where((String key) => key.contains('Question/'))
-        .where((String key) => key.contains('28.png'))
+        .where((String key) => key.contains('.png'))
         .toList();
     attentionImagePath.shuffle();
-
     setState(() {
       solutionAssetPath = solutionImagePath;
       imagesAssetPath = attentionImagePath;
-      currentKey = getCurrentDataIndex(imagesAssetPath[currentQuestion]);
+      currentKey = getCurrentKeyValue(imagesAssetPath[currentQuestion]);
     });
+    return currentKey;
   }
 
   // Game Logic
   void onTapDown(BuildContext context, TapDownDetails details) {
-    int imageOriginalWidth = gameData[currentKey]["size"]["x"];
-    int imageOriginalHeight = gameData[currentKey]["size"]["y"];
+    int imageOriginalWidth = gameData[currentKey - 1]["size"]["x"];
+    int imageOriginalHeight = gameData[currentKey - 1]["size"]["y"];
 
     double posX = details.localPosition.dx;
     double posY = details.localPosition.dy;
     // print("posX: $posX, posY: $posY");
 
     double resultX = boxWidth / 2 +
-        gameData[currentKey]["result"]["x"] * imageOriginalWidth * scaleRatio;
+        gameData[currentKey - 1]["result"]["x"] *
+            imageOriginalWidth *
+            scaleRatio;
     double resultY = boxHeight / 2 +
-        gameData[currentKey]["result"]["y"] * imageOriginalHeight * scaleRatio;
+        gameData[currentKey - 1]["result"]["y"] *
+            imageOriginalHeight *
+            scaleRatio;
     // print("resultX: $resultX, resultY: $resultY");
 
-    double validWidthRange = gameData[currentKey]["valid_ratio"]["x"] *
+    double validWidthRange = gameData[currentKey - 1]["valid_ratio"]["x"] *
         imageOriginalWidth *
         scaleRatio /
         2;
-    double validHeightRange = gameData[currentKey]["valid_ratio"]["y"] *
+    double validHeightRange = gameData[currentKey - 1]["valid_ratio"]["y"] *
         imageOriginalHeight *
         scaleRatio /
         2;
@@ -178,8 +184,8 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   }
 
   double calculateImageScale(int key) {
-    int imageOriginalWidth = gameData[key]["size"]["x"];
-    int imageOriginalHeight = gameData[key]["size"]["y"];
+    int imageOriginalWidth = gameData[key - 1]["size"]["x"];
+    int imageOriginalHeight = gameData[key - 1]["size"]["y"];
     double widthRatio = imageOriginalWidth / boxWidth;
     double heightRatio = imageOriginalHeight / boxHeight;
     double result = 1.0;
@@ -198,13 +204,14 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   void initState() {
     super.initState();
 
-    _initImages();
-    readJson(ATTENTION_GAME_1_PATH, ATTENTION_KEY).then((imageData) {
-      gameData = imageData;
-      scaleRatio = calculateImageScale(currentKey);
+    _initImages().then((value) {
+      readJson(ATTENTION_GAME_1_PATH, ATTENTION_KEY).then((imageData) {
+        gameData = imageData;
+        scaleRatio = calculateImageScale(value);
+        startTotalTimer();
+        startQuestionTimer();
+      });
     });
-    startTotalTimer();
-    startQuestionTimer();
   }
 
   @override
@@ -252,7 +259,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Text(
-                        gameData[currentKey]["title"],
+                        gameData[currentKey - 1]["title"],
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                             color: darkTextColor,
@@ -266,28 +273,28 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
                             borderRadius: BorderRadius.circular(20),
                             child: Material(
                                 child: !isCorrect
-                                    ? GestureDetector(
-                                        onTapDown: (TapDownDetails details) =>
-                                            onTapDown(context, details),
-                                        child: Ink.image(
-                                          image: AssetImage(
-                                              imagesAssetPath[currentQuestion]),
-                                          fit: BoxFit.scaleDown,
-                                          child: InkWell(
-                                            onTap: () {},
-                                          ),
-                                        ))
+                                    ? Ink.image(
+                                        image: AssetImage(
+                                            imagesAssetPath[currentQuestion]),
+                                        fit: BoxFit.scaleDown,
+                                        child: InkWell(
+                                            onTapDown: (TapDownDetails
+                                                    details) =>
+                                                onTapDown(context, details)),
+                                      )
                                     : Ink.image(
                                         image: AssetImage(
-                                            solutionAssetPath[currentQuestion]),
+                                            solutionAssetPath.firstWhere(
+                                                (element) => element.contains(
+                                                    currentKey.toString()))),
                                         fit: BoxFit.scaleDown,
                                       ))))
                   ])
                 : Container(),
             SizedBox(height: 32),
-            isCorrect
+            isCorrect && currentQuestion < imagesAssetPath.length - 1
                 ? ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => nextQuestion(),
                     child: Padding(
                         padding: EdgeInsets.all(10),
                         child:
