@@ -31,11 +31,11 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   List<String> imagesAssetPath = [];
   List<String> solutionAssetPath = [];
   List gameData = [];
-  int currentQuestion = 0;
+  int currentQuestion = 0; // order of question
   int point = 0;
 
   bool isCorrect = false;
-  late int currentKey;
+  late int currentKey; // ID of question
   late double scaleRatio;
 
   // Timer
@@ -56,7 +56,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     setState(() {
       final seconds = questionDuration.inSeconds - reduceSecondsBy;
       if (seconds < 0) {
-        setQuestionCancelTimer();
+        outOfQuestionTime();
       } else {
         questionDuration = Duration(seconds: seconds);
       }
@@ -68,21 +68,36 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     setState(() {
       final seconds = totalDuration.inSeconds - reduceSecondsBy;
       if (seconds < 0) {
-        setTotalCancelTimer();
+        setCancelTotalTimer();
       } else {
         totalDuration = Duration(seconds: seconds);
       }
     });
   }
 
-  void setQuestionCancelTimer() {
+  void setCancelQuestionTimer() {
     questionCountdownTimer!.cancel();
   }
 
-  void setTotalCancelTimer() {
+  void setCancelTotalTimer() {
     totalCountdownTimer!.cancel();
   }
 
+  // Timer Logic
+  void outOfQuestionTime() {
+    if (currentQuestion >= imagesAssetPath.length - 1) {
+      endGame();
+    } else {
+      nextQuestion();
+    }
+  }
+
+  // Question Logic
+  void nextQuestion() {}
+
+  void endGame() {}
+
+  // Image & Image Data
   int getCurrentDataIndex(String imageName) {
     String key = imageName.split("/").last.split(".").first;
     return int.parse(key) - 1;
@@ -115,6 +130,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     });
   }
 
+  // Game Logic
   void onTapDown(BuildContext context, TapDownDetails details) {
     int imageOriginalWidth = gameData[currentKey]["size"]["x"];
     int imageOriginalHeight = gameData[currentKey]["size"]["y"];
@@ -139,6 +155,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   }
 
   void handleCorrectAnswer() {
+    setCancelQuestionTimer();
     setState(() {
       isCorrect = true;
       point += 200;
@@ -161,6 +178,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     return result;
   }
 
+  // Main
   @override
   void initState() {
     super.initState();
@@ -177,8 +195,8 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   @override
   void dispose() {
     super.dispose();
-    setQuestionCancelTimer();
-    setTotalCancelTimer();
+    setCancelQuestionTimer();
+    setCancelTotalTimer();
   }
 
   @override
