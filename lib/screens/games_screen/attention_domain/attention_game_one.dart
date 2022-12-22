@@ -93,7 +93,12 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   }
 
   // Question Logic
-  void nextQuestion() {}
+  void nextQuestion() {
+    setState(() {
+      currentQuestion++;
+      currentKey = getCurrentDataIndex(imagesAssetPath[currentQuestion]);
+    });
+  }
 
   void endGame() {}
 
@@ -126,7 +131,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     setState(() {
       solutionAssetPath = solutionImagePath;
       imagesAssetPath = attentionImagePath;
-      currentKey = getCurrentDataIndex(imagesAssetPath[0]);
+      currentKey = getCurrentDataIndex(imagesAssetPath[currentQuestion]);
     });
   }
 
@@ -137,14 +142,24 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
 
     double posX = details.localPosition.dx;
     double posY = details.localPosition.dy;
+    // print("posX: $posX, posY: $posY");
 
     double resultX = boxWidth / 2 +
         gameData[currentKey]["result"]["x"] * imageOriginalWidth * scaleRatio;
     double resultY = boxHeight / 2 +
         gameData[currentKey]["result"]["y"] * imageOriginalHeight * scaleRatio;
+    // print("resultX: $resultX, resultY: $resultY");
 
-    double validWidthRange = 0.05 * boxWidth;
-    double validHeightRange = 0.07 * boxHeight;
+    double validWidthRange = gameData[currentKey]["valid_ratio"]["x"] *
+        imageOriginalWidth *
+        scaleRatio /
+        2;
+    double validHeightRange = gameData[currentKey]["valid_ratio"]["y"] *
+        imageOriginalHeight *
+        scaleRatio /
+        2;
+    // print(
+    //     "validWidthRange: $validWidthRange, validHeightRange: $validHeightRange");
 
     if (posX >= resultX - validWidthRange &&
         posX <= resultX + validWidthRange &&
