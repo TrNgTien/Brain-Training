@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:brain_training/constants/enum.dart';
 import 'package:brain_training/utils/helper.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/widget/clock.dart';
@@ -14,17 +15,73 @@ class AttentionGameOne extends StatefulWidget {
 }
 
 class _AttentionGameOneState extends State<AttentionGameOne> {
-  String ATTENTION_GAME_1_PATH = "lib/constants/attention_game_1.json";
-  String ATTENTION_KEY = "attentionData";
+  final int TOTAL_TIME_SECONDS = 120;
+  final int QUESTION_TIME_SECONDS = 15;
+  final String ATTENTION_GAME_1_PATH = "lib/constants/attention_game_1.json";
+  final String ATTENTION_KEY = "attentionData";
 
+  GameStatus status = GameStatus.playing;
   late double screenHeight, screenWidth, boxHeight, boxWidth;
+
+  Timer? questionCountdownTimer;
+  Duration questionDuration = const Duration();
+  Timer? totalCountdownTimer;
+  Duration totalDuration = const Duration();
 
   List<String> imagesAssetPath = [];
   List<String> solutionAssetPath = [];
   List gameData = [];
   int currentQuestion = 0;
+  int point = 0;
+
+  bool isCorrect = false;
   late int currentKey;
   late double scaleRatio;
+
+  // Timer
+  void startQuestionTimer() {
+    questionDuration = Duration(seconds: QUESTION_TIME_SECONDS);
+    questionCountdownTimer = Timer.periodic(
+        const Duration(seconds: 1), (_) => setQuestionCountDown());
+  }
+
+  void startTotalTimer() {
+    totalDuration = Duration(seconds: TOTAL_TIME_SECONDS);
+    totalCountdownTimer =
+        Timer.periodic(const Duration(seconds: 1), (_) => setTotalCountDown());
+  }
+
+  void setQuestionCountDown() {
+    const reduceSecondsBy = 1;
+    setState(() {
+      final seconds = questionDuration.inSeconds - reduceSecondsBy;
+      if (seconds < 0) {
+        setQuestionCancelTimer();
+      } else {
+        questionDuration = Duration(seconds: seconds);
+      }
+    });
+  }
+
+  void setTotalCountDown() {
+    const reduceSecondsBy = 1;
+    setState(() {
+      final seconds = totalDuration.inSeconds - reduceSecondsBy;
+      if (seconds < 0) {
+        setTotalCancelTimer();
+      } else {
+        totalDuration = Duration(seconds: seconds);
+      }
+    });
+  }
+
+  void setQuestionCancelTimer() {
+    questionCountdownTimer!.cancel();
+  }
+
+  void setTotalCancelTimer() {
+    totalCountdownTimer!.cancel();
+  }
 
   int getCurrentDataIndex(String imageName) {
     String key = imageName.split("/").last.split(".").first;
@@ -65,28 +122,27 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     double posX = details.localPosition.dx;
     double posY = details.localPosition.dy;
 
-    // print("posX: $posX, posY: $posY");
-
     double resultX = boxWidth / 2 +
         gameData[currentKey]["result"]["x"] * imageOriginalWidth * scaleRatio;
     double resultY = boxHeight / 2 +
         gameData[currentKey]["result"]["y"] * imageOriginalHeight * scaleRatio;
-    // print("resultX: $resultX, resultY: $resultY");
 
     double validWidthRange = 0.05 * boxWidth;
     double validHeightRange = 0.07 * boxHeight;
-    // print(
-    //     "validWidthRange: $validWidthRange, validHeightRange: $validHeightRange");
 
     if (posX >= resultX - validWidthRange &&
         posX <= resultX + validWidthRange &&
         posY >= resultY - validHeightRange &&
         posY <= resultY + validHeightRange) {
-      print("Correct");
-    } else {
-      print("Wrong");
+      handleCorrectAnswer();
     }
-    // print('Result: $resultX, $resultY');
+  }
+
+  void handleCorrectAnswer() {
+    setState(() {
+      isCorrect = true;
+      point += 200;
+    });
   }
 
   double calculateImageScale(int key) {
@@ -114,10 +170,21 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
       gameData = imageData;
       scaleRatio = calculateImageScale(currentKey);
     });
+    startTotalTimer();
+    startQuestionTimer();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    setQuestionCancelTimer();
+    setTotalCancelTimer();
   }
 
   @override
   Widget build(BuildContext context) {
+    int seconds = questionDuration.inSeconds;
+    int totalSeconds = totalDuration.inSeconds;
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     boxHeight = screenHeight * 0.5;
@@ -125,7 +192,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Hãy tìm vị trí đúng theo yêu cầu"),
+          title: Text("Tổng thời gian còn lại: $totalSeconds"),
           backgroundColor: pinkPastel,
           titleTextStyle: const TextStyle(
             color: darkTextColor,
@@ -138,33 +205,63 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
             Padding(
               padding: const EdgeInsets.only(top: 15, bottom: 10),
               child: Text(
-                "Điểm: 0",
+                "Điểm: $point",
                 style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     color: primaryOrange,
                     fontSize: 35),
               ),
             ),
-            Clock(seconds: 120),
+            Clock(seconds: seconds),
             SizedBox(height: 30),
-            Container(
-                height: boxHeight,
-                child: imagesAssetPath.isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Material(
-                            child: GestureDetector(
-                                onTapDown: (TapDownDetails details) =>
-                                    onTapDown(context, details),
-                                child: Ink.image(
-                                  image: AssetImage(
-                                      imagesAssetPath[currentQuestion]),
-                                  fit: BoxFit.scaleDown,
-                                  child: InkWell(
-                                    onTap: () {},
-                                  ),
-                                ))))
-                    : Container())
+            imagesAssetPath.isNotEmpty && gameData.isNotEmpty
+                ? Column(children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        gameData[currentKey]["title"],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            color: darkTextColor,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Container(
+                        height: boxHeight,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Material(
+                                child: !isCorrect
+                                    ? GestureDetector(
+                                        onTapDown: (TapDownDetails details) =>
+                                            onTapDown(context, details),
+                                        child: Ink.image(
+                                          image: AssetImage(
+                                              imagesAssetPath[currentQuestion]),
+                                          fit: BoxFit.scaleDown,
+                                          child: InkWell(
+                                            onTap: () {},
+                                          ),
+                                        ))
+                                    : Ink.image(
+                                        image: AssetImage(
+                                            solutionAssetPath[currentQuestion]),
+                                        fit: BoxFit.scaleDown,
+                                      ))))
+                  ])
+                : Container(),
+            SizedBox(height: 32),
+            isCorrect
+                ? ElevatedButton(
+                    onPressed: () {},
+                    child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child:
+                            Text("Tiếp theo", style: TextStyle(fontSize: 24))),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryOrange))
+                : Container()
           ],
         ));
   }
