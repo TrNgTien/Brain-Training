@@ -17,11 +17,14 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   String ATTENTION_GAME_1_PATH = "lib/constants/attention_game_1.json";
   String ATTENTION_KEY = "attentionData";
 
+  late double screenHeight, screenWidth, boxHeight, boxWidth;
+
   List<String> imagesAssetPath = [];
   List<String> solutionAssetPath = [];
   List gameData = [];
   int currentQuestion = 0;
   late int currentKey;
+  late double scaleRatio;
 
   int getCurrentDataIndex(String imageName) {
     String key = imageName.split("/").last.split(".").first;
@@ -56,15 +59,50 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   }
 
   void onTapDown(BuildContext context, TapDownDetails details) {
-    double boxHeight = MediaQuery.of(context).size.height * 0.5;
-    double boxWidth = MediaQuery.of(context).size.width;
-    print('${details.localPosition}');
+    int imageOriginalWidth = gameData[currentKey]["size"]["x"];
+    int imageOriginalHeight = gameData[currentKey]["size"]["y"];
 
-    // double posx = details.globalPosition.dx;
-    // double posy = details.globalPosition.dy;
-    double resultX = gameData[currentKey]["result"]["x"] * boxHeight;
-    double resultY = gameData[currentKey]["result"]["y"] * boxWidth;
-    print('Result: $resultX, $resultY');
+    double posX = details.localPosition.dx;
+    double posY = details.localPosition.dy;
+
+    // print("posX: $posX, posY: $posY");
+
+    double resultX = boxWidth / 2 +
+        gameData[currentKey]["result"]["x"] * imageOriginalWidth * scaleRatio;
+    double resultY = boxHeight / 2 +
+        gameData[currentKey]["result"]["y"] * imageOriginalHeight * scaleRatio;
+    // print("resultX: $resultX, resultY: $resultY");
+
+    double validWidthRange = 0.05 * boxWidth;
+    double validHeightRange = 0.07 * boxHeight;
+    // print(
+    //     "validWidthRange: $validWidthRange, validHeightRange: $validHeightRange");
+
+    if (posX >= resultX - validWidthRange &&
+        posX <= resultX + validWidthRange &&
+        posY >= resultY - validHeightRange &&
+        posY <= resultY + validHeightRange) {
+      print("Correct");
+    } else {
+      print("Wrong");
+    }
+    // print('Result: $resultX, $resultY');
+  }
+
+  double calculateImageScale(int key) {
+    int imageOriginalWidth = gameData[key]["size"]["x"];
+    int imageOriginalHeight = gameData[key]["size"]["y"];
+    double widthRatio = imageOriginalWidth / boxWidth;
+    double heightRatio = imageOriginalHeight / boxHeight;
+    double result = 1.0;
+
+    if (widthRatio > heightRatio && widthRatio > 1) {
+      result = boxWidth / imageOriginalWidth;
+    } else if (heightRatio > widthRatio && heightRatio > 1) {
+      result = boxHeight / imageOriginalHeight;
+    }
+
+    return result;
   }
 
   @override
@@ -72,15 +110,19 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     super.initState();
 
     _initImages();
-    readJson(ATTENTION_GAME_1_PATH, ATTENTION_KEY).then((imageData) => {
-          setState(() {
-            gameData = imageData;
-          })
-        });
+    readJson(ATTENTION_GAME_1_PATH, ATTENTION_KEY).then((imageData) {
+      gameData = imageData;
+      scaleRatio = calculateImageScale(currentKey);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
+    boxHeight = screenHeight * 0.5;
+    boxWidth = screenWidth;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("Hãy tìm vị trí đúng theo yêu cầu"),
@@ -106,7 +148,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
             Clock(seconds: 120),
             SizedBox(height: 30),
             Container(
-                height: MediaQuery.of(context).size.height * 0.5,
+                height: boxHeight,
                 child: imagesAssetPath.isNotEmpty
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(20),
