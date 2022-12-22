@@ -46,16 +46,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.title),
-      //   backgroundColor: primaryOrange,
-      //   automaticallyImplyLeading: false,
-      //   titleTextStyle: const TextStyle(
-      //     color: Colors.white,
-      //     fontSize: 20,
-      //     fontWeight: FontWeight.w700,
-      //   ),
-      // ),
+      appBar: AppBar(
+         title: Text(widget.title),
+         backgroundColor: primaryOrange,
+         automaticallyImplyLeading: false,
+         titleTextStyle: const TextStyle(
+           color: Colors.white,
+           fontSize: 20,
+           fontWeight: FontWeight.w700,
+         ),
+       ),
       body: Center(
         child: widgetOptions.elementAt(selectedIndex),
       ),
