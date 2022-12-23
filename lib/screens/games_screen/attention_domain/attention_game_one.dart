@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:brain_training/constants/enum.dart';
 import 'package:brain_training/utils/helper.dart';
+import 'package:brain_training/utils/custom_dialog.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/widget/clock.dart';
 
@@ -17,6 +18,7 @@ class AttentionGameOne extends StatefulWidget {
 class _AttentionGameOneState extends State<AttentionGameOne> {
   final int TOTAL_TIME_SECONDS = 120;
   final int QUESTION_TIME_SECONDS = 15;
+  final int POINT_PER_CORRECT_ANSWER = 200;
   final String ATTENTION_GAME_1_PATH = "lib/constants/attention_game_1.json";
   final String ATTENTION_KEY = "attentionData";
 
@@ -35,9 +37,11 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
 
   int currentQuestion = 0; // order of question
   int point = 0;
+  int totalAnswerTime = 0;
 
   bool isCorrect = false;
   late double scaleRatio;
+  late CustomDialog dialog;
 
   // Timer
   void startQuestionTimer() {
@@ -86,15 +90,16 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
 
   // Timer Logic
   void outOfQuestionTime() {
-    if (currentQuestion >= imagesAssetPath.length - 1) {
-      endGame();
-    } else {
-      nextQuestion();
+    if (checkEndGame()) {
+      return handleEndGame();
     }
+    nextQuestion();
   }
 
   // Question Logic
   void nextQuestion() {
+    startQuestionTimer();
+
     setState(() {
       isCorrect = false;
       currentQuestion++;
@@ -102,7 +107,79 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     });
   }
 
-  void endGame() {}
+  bool checkEndGame() {
+    if (currentQuestion >= imagesAssetPath.length - 1 ||
+        totalDuration.inSeconds < 0) {
+      return true;
+    }
+    return false;
+  }
+
+  void handleEndGame() {
+    setCancelTotalTimer();
+    int correctAnswer = point ~/ POINT_PER_CORRECT_ANSWER;
+    int avgTime = calculateAvgTime(correctAnswer);
+    int bonusPoint = calculateBonusPoint(avgTime);
+    int totalPoint = point + bonusPoint;
+
+    dialog.show(
+        Text("Kết Thúc",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.red, fontSize: 40, fontWeight: FontWeight.w600)),
+        SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(
+                "Số vòng chơi vượt qua: ${correctAnswer}",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Thời gian trung bình: ${avgTime} giây",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Điểm: $point",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Điểm thưởng: $bonusPoint",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Tổng điểm: $totalPoint",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        ),
+        [
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.only(left: 50, right: 50),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              color: orangePastel,
+            ),
+            child: TextButton(
+              child: const Text('Chơi lại',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          )
+        ]);
+  }
 
   // Image & Image Data
   int getCurrentKeyValue(String imageName) {
@@ -177,10 +254,14 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
 
   void handleCorrectAnswer() {
     setCancelQuestionTimer();
+    totalAnswerTime += QUESTION_TIME_SECONDS - questionDuration.inSeconds;
     setState(() {
       isCorrect = true;
-      point += 200;
+      point += POINT_PER_CORRECT_ANSWER;
     });
+    if (checkEndGame()) {
+      handleEndGame();
+    }
   }
 
   double calculateImageScale(int key) {
@@ -199,11 +280,22 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     return result;
   }
 
+  int calculateAvgTime(int totalCorrectAnwers) {
+    double averageTotalTime = totalAnswerTime / totalCorrectAnwers;
+    return averageTotalTime.round();
+  }
+
+  int calculateBonusPoint(int avgTime) {
+    double bonusPoint = point / avgTime;
+    return bonusPoint.round();
+  }
+
   // Main
   @override
   void initState() {
     super.initState();
 
+    dialog = CustomDialog(context: context);
     _initImages().then((value) {
       readJson(ATTENTION_GAME_1_PATH, ATTENTION_KEY).then((imageData) {
         gameData = imageData;
