@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:brain_training/constants/enum.dart';
 import 'package:brain_training/utils/helper.dart';
 import 'package:brain_training/utils/custom_dialog.dart';
 import 'package:brain_training/constants/color.dart';
@@ -22,7 +21,6 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   final String ATTENTION_GAME_1_PATH = "lib/constants/attention_game_1.json";
   final String ATTENTION_KEY = "attentionData";
 
-  GameStatus status = GameStatus.playing;
   late double screenHeight, screenWidth, boxHeight, boxWidth;
 
   Timer? questionCountdownTimer;
@@ -40,6 +38,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   int totalAnswerTime = 0;
 
   bool isCorrect = false;
+  bool endGame = false;
   late double scaleRatio;
   late CustomDialog dialog;
 
@@ -73,7 +72,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     setState(() {
       final seconds = totalDuration.inSeconds - reduceSecondsBy;
       if (seconds < 0) {
-        setCancelTotalTimer();
+        handleEndGame();
       } else {
         totalDuration = Duration(seconds: seconds);
       }
@@ -90,6 +89,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
 
   // Timer Logic
   void outOfQuestionTime() {
+    setCancelQuestionTimer();
     if (checkEndGame()) {
       return handleEndGame();
     }
@@ -116,7 +116,11 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
   }
 
   void handleEndGame() {
+    setCancelQuestionTimer();
     setCancelTotalTimer();
+    setState(() {
+      endGame = true;
+    });
     int correctAnswer = point ~/ POINT_PER_CORRECT_ANSWER;
     int avgTime = calculateAvgTime(correctAnswer);
     int bonusPoint = calculateBonusPoint(avgTime);
@@ -280,13 +284,14 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     return result;
   }
 
-  int calculateAvgTime(int totalCorrectAnwers) {
-    double averageTotalTime = totalAnswerTime / totalCorrectAnwers;
+  int calculateAvgTime(int totalCorrectAnswers) {
+    double averageTotalTime =
+        totalCorrectAnswers != 0 ? totalAnswerTime / totalCorrectAnswers : 0.0;
     return averageTotalTime.round();
   }
 
   int calculateBonusPoint(int avgTime) {
-    double bonusPoint = point / avgTime;
+    double bonusPoint = avgTime != 0 ? point / avgTime : 0.0;
     return bonusPoint.round();
   }
 
@@ -370,10 +375,11 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
                                             imagesAssetPath[currentQuestion]),
                                         fit: BoxFit.scaleDown,
                                         child: InkWell(
-                                            onTapDown: (TapDownDetails
-                                                    details) =>
-                                                onTapDown(context, details)),
-                                      )
+                                          onTapDown: !endGame
+                                              ? (TapDownDetails details) =>
+                                                  onTapDown(context, details)
+                                              : null,
+                                        ))
                                     : Ink.image(
                                         image: AssetImage(
                                             solutionAssetPath.firstWhere(
@@ -384,7 +390,9 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
                   ])
                 : Container(),
             SizedBox(height: 32),
-            isCorrect && currentQuestion < imagesAssetPath.length - 1
+            !endGame &&
+                    isCorrect &&
+                    currentQuestion < imagesAssetPath.length - 1
                 ? ElevatedButton(
                     onPressed: () => nextQuestion(),
                     child: Padding(
