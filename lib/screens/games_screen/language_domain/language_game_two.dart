@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import '../../../constants/base_url.dart';
 import '../../../constants/color.dart';
@@ -20,7 +21,7 @@ class LanguageGameTwo extends StatefulWidget {
 class _LanguageGameTwoState extends State<LanguageGameTwo> {
   final int answerDurationInSeconds = 60;
   final int pointPerCorrectAnswer = 200;
-
+  String languageGamePath = "lib/constants/language_2.json";
   Duration answerDuration = const Duration();
   Timer? countdownTimer;
   late Toast toast;
@@ -29,7 +30,10 @@ class _LanguageGameTwoState extends State<LanguageGameTwo> {
   TextEditingController controller = TextEditingController();
   late Future<String> firstCharacter;
   final List<String> _answer = [];
+  List<String> correctAnswers = [];
   int _point = 0;
+  late int numOfWord;
+  int numOfGame = 0;
   GameStatus _status = GameStatus.playing;
 
   // Timer Handler
@@ -67,11 +71,23 @@ class _LanguageGameTwoState extends State<LanguageGameTwo> {
       String firstCharacter =
           dataList[Random().nextInt(dataList.length)].split(' ')[0];
       _answer.add(firstCharacter);
-      print(firstCharacter);
       return firstCharacter;
     }
 
     throw Exception('Failed to load random character in the dictionary');
+  }
+
+  Future<String> readJson() async {
+    final String response = await rootBundle.loadString(languageGamePath);
+    final data = await json.decode(response);
+    final dataRes = data['words'];
+    final wordObj = dataRes[Random().nextInt(dataRes.length)];
+    setState(() {
+      _answer.add(wordObj[0]);
+      // firstCharacter = wordObj[0];
+      numOfWord = wordObj[1];
+    });
+    return wordObj[0];
   }
 
   Future<bool> checkValidWord(String word) async {
@@ -89,21 +105,27 @@ class _LanguageGameTwoState extends State<LanguageGameTwo> {
     String userAnswer = controller.text;
     String firstChar = _answer.last;
     String checkingWord = '$firstChar $userAnswer';
-
+    bool existed = correctAnswers.contains(userAnswer);
     bool isValidWord = await checkValidWord(checkingWord);
-    if (isValidWord) {
+    if (isValidWord && !existed) {
       toast.show('Chính xác', Colors.green);
-      _answer.add(userAnswer);
+      // _answer.add(userAnswer);
       setState(() {
         _point += pointPerCorrectAnswer;
+        numOfGame++;
+        correctAnswers.add(userAnswer);
         // Restart timer
         answerDuration = Duration(seconds: answerDurationInSeconds);
       });
     } else {
-      toast.show('Không hợp lệ', Colors.red);
+      toast.show('Không hợp lệ, hoặc đã từng nhập', Colors.red);
     }
 
     controller.text = '';
+    if (numOfGame == numOfWord) {
+      changeStatus(GameStatus.end);
+      setCancelTimer();
+    }
   }
 
   void changeStatus(GameStatus status) {
@@ -130,10 +152,10 @@ class _LanguageGameTwoState extends State<LanguageGameTwo> {
   @override
   void initState() {
     super.initState();
-
+    firstCharacter = readJson();
     toast = Toast(context: context);
     dialog = CustomDialog(context: context);
-    firstCharacter = fetchRandomCharacter();
+    // firstCharacter = fetchRandomCharacter();
     startTimer();
   }
 
