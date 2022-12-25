@@ -1,4 +1,5 @@
 import 'package:brain_training/screens/games_screen/attention_domain/menu_attention_game_two.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_two.dart';
 import 'package:flutter/material.dart';
 import 'package:brain_training/screens/games_screen/math_domain/math_game_2.dart';
 import 'package:brain_training/screens/games_screen/math_domain/math_game_one.dart';
@@ -116,7 +117,25 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Tìm từ hợp lệ"),
             )),
-        const SizedBox(height: 50),
+        const SizedBox(height: 20),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: darkTextColor,
+              backgroundColor: redGgBtn,
+              textStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const LanguageGameTwo()));
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text("Tìm cụm từ hợp lệ"),
+            )),
+        const SizedBox(height: 20),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
@@ -135,7 +154,7 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Nối từ thích hợp"),
             )),
-        const SizedBox(height: 50),
+        const SizedBox(height: 20),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,

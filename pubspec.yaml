@@ -76,6 +76,7 @@ flutter:
     - lib/constants/language_game.json
     - lib/constants/math_game_2.json
     - lib/constants/language_1.json
+    - lib/constants/language_2.json
     - lib/constants/memory_game_1.json
     - lib/assets/images/
     - lib/assets/images/Animal/
