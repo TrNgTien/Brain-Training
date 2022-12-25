@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/screens/games_screen/attention_domain/enum.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../../widget/clock.dart';
 
 class AttentionGame2 extends StatefulWidget {
   AttentionGame2({Key? key, required this.difficulty}) : super(key: key);
@@ -29,6 +32,9 @@ class _AttentionGame2State extends State<AttentionGame2> {
   int round = 1;
   int point = 0;
   int second = 15;
+  late String titleOfDiff;
+  late Color themeColor;
+  late Color btnColor;
   late Duration myDuration = Duration(seconds: second);
 
   Future _initImages() async {
@@ -163,11 +169,35 @@ class _AttentionGame2State extends State<AttentionGame2> {
     countdownTimer!.cancel();
   }
 
+  void setDiffTitle() {
+    setState(() {
+      switch (widget.difficulty) {
+        case GameDifficulty.EASY:
+          titleOfDiff = 'Dễ';
+          themeColor = greenPastel;
+          btnColor = greenBtn;
+          break;
+        case GameDifficulty.MEDIUM:
+          titleOfDiff = 'Trung bình';
+          themeColor = yellowPastel;
+          btnColor = yellowBtn;
+          break;
+        case GameDifficulty.HARD:
+          titleOfDiff = 'Khó';
+          themeColor = pinkPastel;
+          btnColor = pinkBtn;
+          break;
+        default:
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _initImages();
     startTimer();
+    setDiffTitle();
   }
 
   @override
@@ -183,9 +213,14 @@ class _AttentionGame2State extends State<AttentionGame2> {
         (MediaQuery.of(context).size.width - runSpacing * (columns - 0.8)) /
             columns;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: themeColor,
+        centerTitle: true,
+        title: Text('Độ khó: $titleOfDiff'),
+      ),
       floatingActionButton: isStop
           ? FloatingActionButton.extended(
+              backgroundColor: btnColor,
               onPressed: () => resetRound(),
               label: Row(
                 children: [
@@ -198,17 +233,23 @@ class _AttentionGame2State extends State<AttentionGame2> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Text(
-              '$seconds',
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 50),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 30,
+                bottom: 20,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Clock(seconds: seconds),
+                ],
+              ),
             ),
-            Text(
-              point.toString(),
-              style: const TextStyle(fontSize: 30, color: Colors.red),
-            ),
+            Text("Điểm: $point",
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: brownColor,
+                    fontSize: 30)),
             const SizedBox(
               height: 30,
             ),
@@ -238,7 +279,7 @@ class _AttentionGame2State extends State<AttentionGame2> {
                                     : null),
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.blue),
+                            border: Border.all(color: themeColor),
                           ),
                         ),
                       );

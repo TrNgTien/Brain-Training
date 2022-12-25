@@ -320,7 +320,7 @@ class _GameListState extends State<GameList> {
               foregroundColor: darkTextColor,
               backgroundColor: yellowBtn,
               textStyle: const TextStyle(
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -329,9 +329,9 @@ class _GameListState extends State<GameList> {
                   builder: (BuildContext context) => AttentionGame2Menu()));
             },
             child: const Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(15.0),
               child: Text(
-                "attentionList 2",
+                "Chọn hình giống nhau",
               ),
             )),
       ],
