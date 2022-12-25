@@ -10,6 +10,7 @@ import '../../../constants/color.dart';
 import '../../../constants/enum.dart';
 import '../../../utils/custom_dialog.dart';
 import '../../../utils/toast.dart';
+import '../../../widget/clock.dart';
 
 class LanguageGameTwo extends StatefulWidget {
   const LanguageGameTwo({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class LanguageGameTwo extends StatefulWidget {
 }
 
 class _LanguageGameTwoState extends State<LanguageGameTwo> {
-  final int answerDurationInSeconds = 60;
+  final int answerDurationInSeconds = 300;
   final int pointPerCorrectAnswer = 200;
   String languageGamePath = "lib/constants/language_2.json";
   Duration answerDuration = const Duration();
@@ -171,7 +172,8 @@ class _LanguageGameTwoState extends State<LanguageGameTwo> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trò chơi nối chữ'),
+        centerTitle: true,
+        title: const Text('Tìm cụm từ có nghĩa'),
         backgroundColor: primaryOrange,
       ),
       body: SingleChildScrollView(
@@ -180,17 +182,23 @@ class _LanguageGameTwoState extends State<LanguageGameTwo> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(children: [
-              Text(
-                '$seconds',
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 50),
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 30,
+                  bottom: 20,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Clock(seconds: seconds),
+                  ],
+                ),
               ),
-              Text(
-                'Điểm: $_point',
-                style: const TextStyle(fontSize: 30, color: Colors.red),
-              ),
+              Text("Điểm: $_point",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: brownColor,
+                      fontSize: 30)),
               const SizedBox(
                 height: 30,
               ),
