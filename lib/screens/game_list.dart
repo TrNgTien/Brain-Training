@@ -287,7 +287,7 @@ class _GameListState extends State<GameList> {
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "Tìm hình khác biệt",
+                "Ghi nhớ hình ảnh",
               ),
             )),
       ],

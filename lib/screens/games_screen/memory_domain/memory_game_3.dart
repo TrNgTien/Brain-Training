@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:brain_training/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
+
+import '../../../widget/clock.dart';
 
 class MemoryGame3 extends StatefulWidget {
   const MemoryGame3({Key? key}) : super(key: key);
@@ -224,22 +227,36 @@ class _MemoryGame3State extends State<MemoryGame3> {
     // print(l1[1]);
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text("Màn " + round.toString()),
+          backgroundColor: orangePastel,
         ),
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(
-                '$seconds',
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 50),
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Clock(seconds: seconds),
+                  ],
+                ),
               ),
-              Text(
-                "Điểm: $point",
-                style: const TextStyle(fontSize: 30, color: Colors.red),
+              Text("Điểm: $point",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: brownColor,
+                      fontSize: 30)),
+              const Padding(
+                padding: EdgeInsets.only(
+                  top: 5,
+                  bottom: 5,
+                ),
               ),
               list.isNotEmpty
                   ? GridView.count(
@@ -250,7 +267,7 @@ class _MemoryGame3State extends State<MemoryGame3> {
                             (e) => e != '?'
                                 ? Container(
                                     decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.blue),
+                                        border: Border.all(color: orangePastel),
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(8)),
                                     child: Center(
@@ -262,7 +279,7 @@ class _MemoryGame3State extends State<MemoryGame3> {
                                     ))
                                 : Container(
                                     decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.blue),
+                                        border: Border.all(color: orangePastel),
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(8)),
                                     child: Center(
@@ -294,7 +311,7 @@ class _MemoryGame3State extends State<MemoryGame3> {
                           .map((e) => e != '?'
                               ? Container(
                                   decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.blue),
+                                      border: Border.all(color: pinkPastel),
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(8)),
                                   child: Center(
@@ -313,6 +330,8 @@ class _MemoryGame3State extends State<MemoryGame3> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
+                      style:
+                          ElevatedButton.styleFrom(backgroundColor: greenBtn),
                       onPressed:
                           isSelected.where((c) => c == true).length == level &&
                                   !isEnd
@@ -324,7 +343,10 @@ class _MemoryGame3State extends State<MemoryGame3> {
                           onPressed: resetRound,
                           child: const Text(
                             "Vòng tiếp theo",
-                          ))
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: pinkBtn),
+                        )
                       : Container()
                 ],
               )
@@ -344,7 +366,7 @@ class _MemoryGame3State extends State<MemoryGame3> {
         mainAxisSpacing: 8,
         children: List.generate(isSelected.length, (index) {
           return InkWell(
-            highlightColor: Color.fromRGBO(83, 179, 248, 1),
+            highlightColor: orangePastel,
             onTap: () {
               setState(() {
                 for (int indexBtn = 0;
@@ -371,7 +393,7 @@ class _MemoryGame3State extends State<MemoryGame3> {
                         : null),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue),
+                border: Border.all(color: orangePastel),
               ),
               // child: Text(questions[index]),
             ),
