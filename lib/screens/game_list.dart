@@ -315,7 +315,7 @@ class _GameListState extends State<GameList> {
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "attentionList 1",
+                "Tìm hình theo yêu cầu",
               ),
             )),
         const SizedBox(height: 50),
