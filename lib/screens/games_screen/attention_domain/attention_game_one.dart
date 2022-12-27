@@ -98,13 +98,14 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
 
   // Question Logic
   void nextQuestion() {
-    startQuestionTimer();
-
     setState(() {
       isCorrect = false;
       currentQuestion++;
       currentKey = getCurrentKeyValue(imagesAssetPath[currentQuestion]);
     });
+
+    scaleRatio = calculateImageScale(currentKey);
+    startQuestionTimer();
   }
 
   bool checkEndGame() {
@@ -179,10 +180,25 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
                   style: TextStyle(fontSize: 20, color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
+                restartGame();
               },
             ),
           )
         ]);
+  }
+
+  void restartGame() {
+    currentQuestion = 0;
+    point = 0;
+    totalAnswerTime = 0;
+
+    isCorrect = false;
+    endGame = false;
+
+    setupImages();
+    scaleRatio = calculateImageScale(currentKey);
+    startTotalTimer();
+    startQuestionTimer();
   }
 
   // Image & Image Data
@@ -191,7 +207,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     return int.parse(key);
   }
 
-  Future<int> _initImages() async {
+  Future<void> _loadAssetsFiles() async {
     final manifestContent = await rootBundle.loadString('AssetManifest.json');
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
 
@@ -209,42 +225,43 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
         .where((String key) => key.contains('Question/'))
         .where((String key) => key.contains('.png'))
         .toList();
-    attentionImagePath.shuffle();
+
+    solutionAssetPath = solutionImagePath;
+    imagesAssetPath = attentionImagePath;
+  }
+
+  void setupImages() {
+    imagesAssetPath.shuffle();
     setState(() {
-      solutionAssetPath = solutionImagePath;
-      imagesAssetPath = attentionImagePath;
       currentKey = getCurrentKeyValue(imagesAssetPath[currentQuestion]);
     });
-    return currentKey;
   }
 
   // Game Logic
   void onTapDown(BuildContext context, TapDownDetails details) {
+    // print(currentKey);
     int imageOriginalWidth = gameData[currentKey - 1]["size"]["x"];
     int imageOriginalHeight = gameData[currentKey - 1]["size"]["y"];
+    int resultOriginalWidth = gameData[currentKey - 1]["result"]["x"];
+    int resultOriginalHeight = gameData[currentKey - 1]["result"]["y"];
+
+    double resultXFromCenterImage =
+        resultOriginalWidth - imageOriginalWidth / 2;
+    double resultYFromCenterImage =
+        resultOriginalHeight - imageOriginalHeight / 2;
 
     double posX = details.localPosition.dx;
     double posY = details.localPosition.dy;
     // print("posX: $posX, posY: $posY");
 
-    double resultX = boxWidth / 2 +
-        gameData[currentKey - 1]["result"]["x"] *
-            imageOriginalWidth *
-            scaleRatio;
-    double resultY = boxHeight / 2 +
-        gameData[currentKey - 1]["result"]["y"] *
-            imageOriginalHeight *
-            scaleRatio;
+    double resultX = boxWidth / 2 + resultXFromCenterImage * scaleRatio;
+    double resultY = boxHeight / 2 + resultYFromCenterImage * scaleRatio;
     // print("resultX: $resultX, resultY: $resultY");
 
-    double validWidthRange = gameData[currentKey - 1]["valid_ratio"]["x"] *
-        imageOriginalWidth *
-        scaleRatio /
-        2;
-    double validHeightRange = gameData[currentKey - 1]["valid_ratio"]["y"] *
-        imageOriginalHeight *
-        scaleRatio /
-        2;
+    double validWidthRange =
+        gameData[currentKey - 1]["valid_box"]["x"] * scaleRatio / 2;
+    double validHeightRange =
+        gameData[currentKey - 1]["valid_box"]["y"] * scaleRatio / 2;
     // print(
     //     "validWidthRange: $validWidthRange, validHeightRange: $validHeightRange");
 
@@ -301,10 +318,11 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     super.initState();
 
     dialog = CustomDialog(context: context);
-    _initImages().then((value) {
+    _loadAssetsFiles().then((val) {
+      setupImages();
       readJson(ATTENTION_GAME_1_PATH, ATTENTION_KEY).then((imageData) {
         gameData = imageData;
-        scaleRatio = calculateImageScale(value);
+        scaleRatio = calculateImageScale(currentKey);
         startTotalTimer();
         startQuestionTimer();
       });
@@ -381,10 +399,12 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
                                               : null,
                                         ))
                                     : Ink.image(
-                                        image: AssetImage(
-                                            solutionAssetPath.firstWhere(
-                                                (element) => element.contains(
-                                                    currentKey.toString()))),
+                                        image: AssetImage(solutionAssetPath
+                                            .firstWhere((element) =>
+                                                element.split("/").last ==
+                                                imagesAssetPath[currentQuestion]
+                                                    .split("/")
+                                                    .last)),
                                         fit: BoxFit.scaleDown,
                                       ))))
                   ])
