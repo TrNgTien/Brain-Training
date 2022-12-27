@@ -4,6 +4,9 @@ import 'package:function_tree/function_tree.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../constants/color.dart';
+import '../../../widget/clock.dart';
+
 class MathGame extends StatefulWidget {
   const MathGame({Key? key}) : super(key: key);
 
@@ -19,6 +22,10 @@ class _MathGameState extends State<MathGame> {
   int _currentPlace = 0;
   int _point = 0;
   int _numOfCorrect = 0;
+  bool isEnd = false;
+  bool _visible = false;
+  bool isAdd = true;
+  int number = 0;
   String gameRules =
       "Người chơi chọn vào phép tính có kết quả bé nhất\nThời gian: 60 giây\nTrả lời đúng 5 câu liên tiếp -> cộng thêm 10s\nSai: -2s/ đáp án\nSố điểm cho từng round đã được để trong excel\nTổng điểm = Tổng điểm mỗi round";
 
@@ -49,11 +56,30 @@ class _MathGameState extends State<MathGame> {
     if (validateAns(selected)) {
       _point += int.parse(_items[_currentPlace]["points"]);
       _numOfCorrect++;
-      if (_numOfCorrect == 5) addTimer();
+      if (_numOfCorrect == 5) {
+        addTimer();
+        setState(() {
+          _visible = true;
+          isAdd = true;
+          number = 10;
+        });
+      }
+      ;
     } else {
       _numOfCorrect = 0;
+
       minusTimer();
+      setState(() {
+        _visible = false;
+        isAdd = false;
+        number = 2;
+      });
     }
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        _visible = false;
+      });
+    });
   }
 
   bool validateAns(String selected) {
@@ -86,6 +112,7 @@ class _MathGameState extends State<MathGame> {
     setState(() {
       if (seconds < 0) {
         setCancelTimer();
+        isEnd = true;
       } else {
         myDuration = Duration(seconds: myDuration.inSeconds - 2);
       }
@@ -129,28 +156,41 @@ class _MathGameState extends State<MathGame> {
     final seconds = myDuration.inSeconds;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chọn số nhỏ hơn'),
+        backgroundColor: primaryOrange,
+        title: const Text(''),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Text(
-              '$seconds',
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 50),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 30,
+                bottom: 20,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Clock(seconds: seconds),
+                  animateClock(isAdd, number)
+                ],
+              ),
             ),
-            Text(
-              "Điểm: $_point",
-              style: const TextStyle(fontSize: 30, color: Colors.red),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            const Text(
-              "Chọn đáp án có kết quả nhỏ hơn",
-              style: TextStyle(fontSize: 25),
+            Text("Điểm: $_point",
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: brownColor,
+                    fontSize: 30)),
+            const Padding(
+              padding: EdgeInsets.only(
+                top: 30,
+                bottom: 20,
+              ),
+              child: Text("Chọn đáp án có kết quả nhỏ hơn",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20)),
             ),
             const SizedBox(
               height: 30,
@@ -175,15 +215,31 @@ class _MathGameState extends State<MathGame> {
     );
   }
 
+  Widget animateClock(bool isAdd, int number) {
+    return AnimatedOpacity(
+      opacity: _visible ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 500),
+      // The green box must be a child of the AnimatedOpacity widget.
+      child: Text(
+        '${isAdd ? '+' : '-'} $number',
+        style: TextStyle(color: isAdd ? Colors.green : Colors.red),
+      ),
+    );
+  }
+
   Expanded buttonAns(String ansSide) {
     return Expanded(
       child: ElevatedButton(
-          style:
-              ElevatedButton.styleFrom(fixedSize: const Size.fromHeight(150)),
-          onPressed: () => handleClickAns(ansSide),
+          style: ElevatedButton.styleFrom(
+              fixedSize: const Size.fromHeight(150),
+              backgroundColor: orangePastel),
+          onPressed: () => isEnd ? null : handleClickAns(ansSide),
           child: Text(
             _items[_currentPlace][ansSide],
-            style: const TextStyle(fontSize: 19),
+            style: const TextStyle(
+              fontSize: 19,
+              color: darkTextColor,
+            ),
           )),
     );
   }

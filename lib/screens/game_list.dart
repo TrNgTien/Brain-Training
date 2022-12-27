@@ -1,4 +1,5 @@
 import 'package:brain_training/screens/games_screen/attention_domain/menu_attention_game_two.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_two.dart';
 import 'package:flutter/material.dart';
 import 'package:brain_training/screens/games_screen/attention_domain/attention_game_one.dart';
 import 'package:brain_training/screens/games_screen/math_domain/math_game_2.dart';
@@ -9,7 +10,6 @@ import 'package:brain_training/screens/games_screen/language_domain/language_gam
 import 'package:brain_training/screens/games_screen/language_domain/language_game_four.dart';
 import 'package:brain_training/screens/games_screen/language_domain/language_game_three.dart';
 import 'package:brain_training/constants/color.dart';
-import 'package:brain_training/widget/bottom_nav.dart';
 import 'games_screen/memory_domain/memory_game_3.dart';
 
 class GameList extends StatefulWidget {
@@ -80,11 +80,6 @@ class _GameListState extends State<GameList> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNav(
-        colorBackground: colorBottomNav(widget.domainName),
-        colorSelectedItem: Colors.black,
-        colorUnselectedItem: Colors.white,
-      ),
     );
   }
 
@@ -123,7 +118,25 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Tìm từ hợp lệ"),
             )),
-        const SizedBox(height: 50),
+        const SizedBox(height: 20),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: darkTextColor,
+              backgroundColor: redGgBtn,
+              textStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const LanguageGameTwo()));
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text("Tìm cụm từ hợp lệ"),
+            )),
+        const SizedBox(height: 20),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
@@ -142,7 +155,7 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Nối từ thích hợp"),
             )),
-        const SizedBox(height: 50),
+        const SizedBox(height: 20),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
@@ -275,7 +288,7 @@ class _GameListState extends State<GameList> {
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "Tìm hình khác biệt",
+                "Ghi nhớ hình ảnh",
               ),
             )),
       ],
@@ -311,7 +324,7 @@ class _GameListState extends State<GameList> {
               foregroundColor: darkTextColor,
               backgroundColor: yellowBtn,
               textStyle: const TextStyle(
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -320,9 +333,9 @@ class _GameListState extends State<GameList> {
                   builder: (BuildContext context) => AttentionGame2Menu()));
             },
             child: const Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(15.0),
               child: Text(
-                "attentionList 2",
+                "Chọn hình giống nhau",
               ),
             )),
       ],
