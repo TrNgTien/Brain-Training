@@ -208,7 +208,6 @@ class _MathGameState extends State<MathGame> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Clock(seconds: seconds),
                   animateClock(isAdd, number)
