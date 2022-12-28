@@ -193,7 +193,8 @@ class _GameListState extends State<GameList> {
               ),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => const MathGame()));
+                    builder: (BuildContext context) =>
+                        MathGame(title: "Tìm số nhỏ hơn")));
               },
               child: const Padding(
                 padding: EdgeInsets.all(20.0),

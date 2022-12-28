@@ -78,12 +78,15 @@ flutter:
     - lib/constants/language_1.json
     - lib/constants/language_2.json
     - lib/constants/memory_game_1.json
+    - lib/constants/attention_game_1.json
     - lib/assets/images/
     - lib/assets/images/Animal/
     - lib/assets/images/Transportation/
     - lib/assets/images/FruitVegetable/
     - lib/assets/images/HouseholdItem/
     - lib/assets/icons/
+    - lib/assets/images/Attention/Question/
+    - lib/assets/images/Attention/Solution/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
