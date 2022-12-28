@@ -19,6 +19,7 @@ class _MathGameState extends State<MathGame> {
   Timer? countdownTimer;
   String mathGamePath = "lib/constants/math_game.json";
   Duration myDuration = const Duration(seconds: 59);
+  late CustomDialog dialog;
   List _items = [];
   int _currentPlace = 0;
   int _point = 0;
@@ -27,11 +28,11 @@ class _MathGameState extends State<MathGame> {
   bool _visible = false;
   bool isAdd = true;
   int number = 0;
-  late CustomDialog dialog;
 
   @override
   void initState() {
     super.initState();
+    dialog = CustomDialog(context: context);
     readJson();
     startTimer();
   }
@@ -193,7 +194,7 @@ class _MathGameState extends State<MathGame> {
     final seconds = myDuration.inSeconds;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryOrange,
+        backgroundColor: orangePastel,
         title: Text(widget.title),
         centerTitle: true,
       ),
