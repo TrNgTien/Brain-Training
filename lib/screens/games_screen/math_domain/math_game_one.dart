@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:function_tree/function_tree.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../../constants/color.dart';
-import '../../../widget/clock.dart';
+import 'package:brain_training/constants/color.dart';
+import 'package:brain_training/widget/clock.dart';
+import 'package:brain_training/utils/custom_dialog.dart';
 
 class MathGame extends StatefulWidget {
-  const MathGame({Key? key}) : super(key: key);
+  MathGame({Key? key, required this.title}) : super(key: key);
+  final String title;
 
   @override
   State<MathGame> createState() => _MathGameState();
@@ -18,6 +19,7 @@ class _MathGameState extends State<MathGame> {
   Timer? countdownTimer;
   String mathGamePath = "lib/constants/math_game.json";
   Duration myDuration = const Duration(seconds: 59);
+  late CustomDialog dialog;
   List _items = [];
   int _currentPlace = 0;
   int _point = 0;
@@ -26,8 +28,20 @@ class _MathGameState extends State<MathGame> {
   bool _visible = false;
   bool isAdd = true;
   int number = 0;
-  String gameRules =
-      "Người chơi chọn vào phép tính có kết quả bé nhất\nThời gian: 60 giây\nTrả lời đúng 5 câu liên tiếp -> cộng thêm 10s\nSai: -2s/ đáp án\nSố điểm cho từng round đã được để trong excel\nTổng điểm = Tổng điểm mỗi round";
+
+  @override
+  void initState() {
+    super.initState();
+    dialog = CustomDialog(context: context);
+    readJson();
+    startTimer();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    countdownTimer!.cancel();
+  }
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString(mathGamePath);
@@ -133,22 +147,46 @@ class _MathGameState extends State<MathGame> {
 
   void setCancelTimer() {
     countdownTimer!.cancel();
-    _showMyDialog("Kết thúc", "Hết giờ", () {
-      Navigator.of(context).pop();
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    readJson();
-    startTimer();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    countdownTimer!.cancel();
+    dialog.show(
+        Text("Kết Thúc",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.red, fontSize: 40, fontWeight: FontWeight.w600)),
+        Text(
+          "Hết giờ",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.w500),
+        ),
+        [
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.only(left: 50, right: 50),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              color: orangePastel,
+            ),
+            child: TextButton(
+              child: const Text('Chơi lại',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              onPressed: () {
+                setState(() {
+                  myDuration = const Duration(seconds: 59);
+                  _items = [];
+                  _currentPlace = 0;
+                  _point = 0;
+                  _numOfCorrect = 0;
+                  isEnd = false;
+                  _visible = false;
+                  isAdd = true;
+                  number = 0;
+                  readJson();
+                  startTimer();
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          )
+        ]);
   }
 
   @override
@@ -156,8 +194,8 @@ class _MathGameState extends State<MathGame> {
     final seconds = myDuration.inSeconds;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryOrange,
-        title: const Text(''),
+        backgroundColor: orangePastel,
+        title: Text(widget.title),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -170,6 +208,7 @@ class _MathGameState extends State<MathGame> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Clock(seconds: seconds),
                   animateClock(isAdd, number)
@@ -242,29 +281,5 @@ class _MathGameState extends State<MathGame> {
             ),
           )),
     );
-  }
-
-  Future<void> _showMyDialog(
-      String title, String content, Function callback) async {
-    return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => AlertDialog(
-              title: Text(title),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(content),
-                  ],
-                ),
-              ),
-              actionsAlignment: MainAxisAlignment.center,
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Xác nhận'),
-                  onPressed: () => callback(),
-                ),
-              ],
-            ));
   }
 }
