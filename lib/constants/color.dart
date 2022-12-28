@@ -12,3 +12,6 @@ const yellowBtn = Color.fromARGB(255, 246, 204, 131);
 const primaryBackground = Color.fromARGB(255, 255, 243, 238);
 const blueFbBtn = Color.fromARGB(255, 66, 103, 178);
 const redGgBtn = Color.fromARGB(255, 234, 67, 53);
+const greenBorder = Color.fromARGB(255, 107, 174, 68);
+const brownColor = Color.fromARGB(255, 219, 113, 69);
+const grayColor = Color.fromARGB(255, 197, 187, 183);

@@ -1,15 +1,18 @@
-import 'package:brain_training/screens/math_domain/game_2.dart';
-import 'package:brain_training/screens/math_domain/math_game_one.dart';
-import 'package:brain_training/screens/memory_domain/game-1.dart';
+import 'package:brain_training/screens/games_screen/attention_domain/menu_attention_game_two.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_two.dart';
 import 'package:flutter/material.dart';
+import 'package:brain_training/screens/games_screen/math_domain/math_game_2.dart';
+import 'package:brain_training/screens/games_screen/math_domain/math_game_one.dart';
+import 'package:brain_training/screens/games_screen/memory_domain/memory_game_1.dart';
+import 'package:brain_training/screens/games_screen/memory_domain/memory_game_two.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_one.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_four.dart';
+import 'package:brain_training/screens/games_screen/language_domain/language_game_three.dart';
 import 'package:brain_training/constants/color.dart';
-import '../widget/bottom_nav.dart';
-import 'language_domain/language_game_one.dart';
-import 'language_domain/language_game_four.dart';
-import 'language_domain/language_game_three.dart';
+import 'games_screen/memory_domain/memory_game_3.dart';
 
 class GameList extends StatefulWidget {
-  String domainName;
+  final domainName;
   GameList({super.key, required this.domainName});
 
   @override
@@ -76,11 +79,6 @@ class _GameListState extends State<GameList> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNav(
-        colorBackground: colorBottomNav(widget.domainName),
-        colorSelectedItem: Colors.black,
-        colorUnselectedItem: Colors.white,
-      ),
     );
   }
 
@@ -119,7 +117,25 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Tìm từ hợp lệ"),
             )),
-        const SizedBox(height: 50),
+        const SizedBox(height: 20),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: darkTextColor,
+              backgroundColor: redGgBtn,
+              textStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const LanguageGameTwo()));
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text("Tìm cụm từ hợp lệ"),
+            )),
+        const SizedBox(height: 20),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
@@ -138,7 +154,7 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Nối từ thích hợp"),
             )),
-        const SizedBox(height: 50),
+        const SizedBox(height: 20),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
@@ -164,49 +180,51 @@ class _GameListState extends State<GameList> {
 
   Widget mathList(BuildContext context) {
     return Center(
-        child: Column(
-      children: [
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: darkTextColor,
-              backgroundColor: greenBtn,
-              textStyle: const TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
+      child: Column(
+        children: [
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: darkTextColor,
+                backgroundColor: greenBtn,
+                textStyle: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const MathGame()));
-            },
-            child: const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                "Tìm số nhỏ hơn",
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        MathGame(title: "Tìm số nhỏ hơn")));
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  "Tìm số nhỏ hơn",
+                ),
+              )),
+          const SizedBox(height: 50),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: darkTextColor,
+                backgroundColor: yellowBtn,
+                textStyle: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            )),
-        const SizedBox(height: 50),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: darkTextColor,
-              backgroundColor: yellowBtn,
-              textStyle: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const Game2()));
-            },
-            child: const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                "Tìm tổng 2 số",
-              ),
-            )),
-      ],
-    ));
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => const Game2()));
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  "Tìm tổng 2 số",
+                ),
+              )),
+        ],
+      ),
+    );
   }
 
   Widget memoryList(BuildContext context) {
@@ -224,12 +242,13 @@ class _GameListState extends State<GameList> {
             ),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const Game1()));
+                  builder: (BuildContext context) =>
+                      Game1(titleGame: "Chọn ô màu")));
             },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "mem 1",
+                "Chọn ô màu",
               ),
             )),
         const SizedBox(height: 50),
@@ -242,7 +261,10 @@ class _GameListState extends State<GameList> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const MemoryGameTwo()));
+            },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
@@ -259,28 +281,14 @@ class _GameListState extends State<GameList> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const MemoryGame3()));
+            },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "mem 3",
-              ),
-            )),
-        const SizedBox(height: 50),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: darkTextColor,
-              backgroundColor: pinkBtn,
-              textStyle: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            onPressed: () {},
-            child: const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                "mem 4",
+                "Ghi nhớ hình ảnh",
               ),
             )),
       ],
@@ -313,15 +321,18 @@ class _GameListState extends State<GameList> {
               foregroundColor: darkTextColor,
               backgroundColor: yellowBtn,
               textStyle: const TextStyle(
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => AttentionGame2Menu()));
+            },
             child: const Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(15.0),
               child: Text(
-                "attentionList 2",
+                "Chọn hình giống nhau",
               ),
             )),
       ],

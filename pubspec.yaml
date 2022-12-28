@@ -40,6 +40,7 @@ dependencies:
   function_tree: ^0.8.13
   characters: ^1.2.1
   http: ^0.13.5
+  stack: ^0.2.1
 
 dev_dependencies:
   flutter_test:
@@ -73,10 +74,19 @@ flutter:
   assets:
     - lib/constants/math_game.json
     - lib/constants/language_game.json
-    - lib/constants/math-game-2.json
-    - lib/constants/language-1.json
+    - lib/constants/math_game_2.json
+    - lib/constants/language_1.json
+    - lib/constants/language_2.json
+    - lib/constants/memory_game_1.json
+    - lib/constants/attention_game_1.json
     - lib/assets/images/
+    - lib/assets/images/Animal/
+    - lib/assets/images/Transportation/
+    - lib/assets/images/FruitVegetable/
+    - lib/assets/images/HouseholdItem/
     - lib/assets/icons/
+    - lib/assets/images/Attention/Question/
+    - lib/assets/images/Attention/Solution/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

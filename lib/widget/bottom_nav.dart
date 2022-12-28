@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:brain_training/constants/color.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import "package:brain_training/constants/icons.dart";
 
 class BottomNav extends StatefulWidget {
-  Color? colorBackground;
-  Color? colorUnselectedItem;
-  Color? colorSelectedItem;
+  final Color? colorBackground;
+  final Color? colorUnselectedItem;
+  final Color? colorSelectedItem;
+  final Function(int)? function;
+  final int selectedIndex;
   BottomNav(
       {super.key,
       required this.colorBackground,
       required this.colorUnselectedItem,
-      required this.colorSelectedItem});
+      required this.colorSelectedItem,
+      required this.function,
+      required this.selectedIndex});
 
   @override
   State<BottomNav> createState() => _BottomNavState();
 }
 
 class _BottomNavState extends State<BottomNav> {
-  String playingIcon = "lib/assets/icons/playing_ic.svg";
-  String profileIcon = "lib/assets/icons/profile_ic.svg";
-  String rankingIcon = "lib/assets/icons/ranking_ic.svg";
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -43,7 +37,7 @@ class _BottomNavState extends State<BottomNav> {
             playingIcon,
             height: 30,
             width: 30,
-            color: _selectedIndex == 0
+            color: widget.selectedIndex == 0
                 ? widget.colorSelectedItem
                 : widget.colorUnselectedItem,
           )),
@@ -55,7 +49,7 @@ class _BottomNavState extends State<BottomNav> {
             rankingIcon,
             height: 30,
             width: 30,
-            color: _selectedIndex == 1
+            color: widget.selectedIndex == 1
                 ? widget.colorSelectedItem
                 : widget.colorUnselectedItem,
           )),
@@ -67,15 +61,15 @@ class _BottomNavState extends State<BottomNav> {
             profileIcon,
             height: 30,
             width: 30,
-            color: _selectedIndex == 2
+            color: widget.colorBackground == 2
                 ? widget.colorSelectedItem
                 : widget.colorUnselectedItem,
           )),
           label: 'Cá nhân',
         ),
       ],
-      currentIndex: _selectedIndex,
-      onTap: _onItemTapped,
+      currentIndex: widget.selectedIndex,
+      onTap: (int index) => widget.function!(index),
     );
   }
 }

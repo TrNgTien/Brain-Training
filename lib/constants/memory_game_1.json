@@ -1,0 +1,190 @@
+{
+  "matrix": [
+    {
+      "hTile": 2,
+      "vTile": 3,
+      "bonus_points": 100,
+      "tile": 1
+    },
+    {
+      "hTile": 3,
+      "vTile": 3,
+      "bonus_points": 200,
+      "tile": 2
+    },
+    {
+      "hTile": 3,
+      "vTile": 4,
+      "bonus_points": 300,
+      "tile": 3
+    },
+    {
+      "hTile": 4,
+      "vTile": 4,
+      "bonus_points": 400,
+      "tile": 4
+    },
+    {
+      "hTile": 4,
+      "vTile": 5,
+      "bonus_points": 500,
+      "tile": 5
+    },
+    {
+      "hTile": 4,
+      "vTile": 5,
+      "bonus_points": 600,
+      "tile": 6
+    },
+    {
+      "hTile": 5,
+      "vTile": 5,
+      "bonus_points": 700,
+      "tile": 7
+    },
+    {
+      "hTile": 5,
+      "vTile": 6,
+      "bonus_points": 800,
+      "tile": 8
+    },
+    {
+      "hTile": 5,
+      "vTile": 6,
+      "bonus_points": 900,
+      "tile": 9
+    },
+    {
+      "hTile": 6,
+      "vTile": 6,
+      "bonus_points": 1000,
+      "tile": 10
+    },
+    {
+      "hTile": 6,
+      "vTile": 7,
+      "bonus_points": 1100,
+      "tile": 11
+    },
+    {
+      "hTile": 6,
+      "vTile": 7,
+      "bonus_points": 1200,
+      "tile": 12
+    },
+    {
+      "hTile": 7,
+      "vTile": 7,
+      "bonus_points": 1300,
+      "tile": 13
+    },
+    {
+      "hTile": 7,
+      "vTile": 7,
+      "bonus_points": 1400,
+      "tile": 14
+    },
+    {
+      "hTile": 7,
+      "vTile": 8,
+      "bonus_points": 1500,
+      "tile": 15
+    },
+    {
+      "hTile": 7,
+      "vTile": 8,
+      "bonus_points": 1500,
+      "tile": 15
+    },
+    {
+      "hTile": 7,
+      "vTile": 8,
+      "bonus_points": 1600,
+      "tile": 16
+    },
+    {
+      "hTile": 8,
+      "vTile": 8,
+      "bonus_points": 1600,
+      "tile": 17
+    },
+    {
+      "hTile": 8,
+      "vTile": 8,
+      "bonus_points": 1600,
+      "tile": 18
+    },
+    {
+      "hTile": 8,
+      "vTile": 8,
+      "bonus_points": 1600,
+      "tile": 19
+    },
+    {
+      "hTile": 8,
+      "vTile": 9,
+      "bonus_points": 1600,
+      "tile": 20
+    },
+    {
+      "hTile": 8,
+      "vTile": 9,
+      "bonus_points": 1600,
+      "tile": 21
+    },
+    {
+      "hTile": 9,
+      "vTile": 9,
+      "bonus_points": 1600,
+      "tile": 22
+    },
+    {
+      "hTile": 9,
+      "vTile": 9,
+      "bonus_points": 1600,
+      "tile": 23
+    },
+    {
+      "hTile": 9,
+      "vTile": 9,
+      "bonus_points": 1600,
+      "tile": 24
+    },
+    {
+      "hTile": 9,
+      "vTile": 10,
+      "bonus_points": 1600,
+      "tile": 25
+    },
+    {
+      "hTile": 9,
+      "vTile": 10,
+      "bonus_points": 1600,
+      "tile": 26
+    },
+    {
+      "hTile": 9,
+      "vTile": 10,
+      "bonus_points": 1600,
+      "tile": 27
+    },
+    {
+      "hTile": 10,
+      "vTile": 10,
+      "bonus_points": 1600,
+      "tile": 28
+    },
+    {
+      "hTile": 10,
+      "vTile": 10,
+      "bonus_points": 1600,
+      "tile": 29
+    },
+    {
+      "hTile": 10,
+      "vTile": 10,
+      "bonus_points": 1600,
+      "tile": 30
+    }
+  ]
+}
