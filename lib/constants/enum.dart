@@ -1,3 +1,4 @@
+
 // Enum for language games
 enum ButtonType { question, answer, solution }
 
