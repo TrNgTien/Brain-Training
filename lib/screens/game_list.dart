@@ -55,6 +55,7 @@ class _GameListState extends State<GameList> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.domainName),
+        centerTitle: true,
         foregroundColor: darkTextColor,
         titleTextStyle: const TextStyle(
           color: darkTextColor,
@@ -121,7 +122,7 @@ class _GameListState extends State<GameList> {
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
-              backgroundColor: redGgBtn,
+              backgroundColor: brownColor,
               textStyle: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -133,7 +134,7 @@ class _GameListState extends State<GameList> {
             },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
-              child: Text("Tìm cụm từ hợp lệ"),
+              child: Text("Tìm cụm từ có nghĩa"),
             )),
         const SizedBox(height: 20),
         ElevatedButton(
@@ -268,7 +269,7 @@ class _GameListState extends State<GameList> {
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "mem 2",
+                "Ghi nhớ hình ảnh",
               ),
             )),
         const SizedBox(height: 50),
@@ -288,7 +289,7 @@ class _GameListState extends State<GameList> {
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "Ghi nhớ hình ảnh",
+                "Tìm hình bị thiếu",
               ),
             )),
       ],

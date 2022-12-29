@@ -194,6 +194,7 @@ class _Game2State extends State<Game2> {
         appBar: AppBar(
           title: Text('Tìm tổng 2 số có tổng là ${gameType()}'),
           backgroundColor: orangePastel,
+          centerTitle: true,
           foregroundColor: darkTextColor,
           titleTextStyle: const TextStyle(
             color: darkTextColor,

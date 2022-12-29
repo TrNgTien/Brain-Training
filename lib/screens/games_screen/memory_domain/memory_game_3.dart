@@ -337,7 +337,14 @@ class _MemoryGame3State extends State<MemoryGame3> {
                                   !isEnd
                               ? handleSubmit
                               : null,
-                      child: const Text("Kiểm tra")),
+                      child: const Text(
+                        "Kiểm tra",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: darkTextColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )),
                   round < 10
                       ? ElevatedButton(
                           onPressed: resetRound,
@@ -345,7 +352,12 @@ class _MemoryGame3State extends State<MemoryGame3> {
                             "Vòng tiếp theo",
                           ),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: pinkBtn),
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              backgroundColor: primaryOrange),
                         )
                       : Container()
                 ],

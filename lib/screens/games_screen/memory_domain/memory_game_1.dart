@@ -187,6 +187,7 @@ class _Game1State extends State<Game1> {
         title: Text(widget.titleGame),
         backgroundColor: greenPastel,
         foregroundColor: darkTextColor,
+        centerTitle: true,
         titleTextStyle: const TextStyle(
           color: darkTextColor,
           fontSize: 20,

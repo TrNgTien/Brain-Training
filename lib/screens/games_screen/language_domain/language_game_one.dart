@@ -181,6 +181,7 @@ class _LanguageGameOneState extends State<LanguageGameOne> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Tìm từ hợp lệ'),
+          centerTitle: true,
           backgroundColor: primaryOrange,
         ),
         body: SingleChildScrollView(

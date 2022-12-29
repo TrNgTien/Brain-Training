@@ -19,6 +19,7 @@ class _Game1State extends State<Game1> {
       appBar: AppBar(
         elevation: 0,
         title: Text("Chọn ô màu"),
+        centerTitle: true,
         backgroundColor: greenPastel,
         foregroundColor: darkTextColor,
       ),

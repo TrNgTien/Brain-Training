@@ -21,6 +21,7 @@ class _AttentionGame2MenuState extends State<AttentionGame2Menu> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: yellowPastel,
+          foregroundColor: darkTextColor,
           centerTitle: true,
           title: Text(
             "Chọn độ khó",
@@ -45,7 +46,7 @@ class _AttentionGame2MenuState extends State<AttentionGame2Menu> {
                             context, entry.key, entry.value, yellowBtn);
                       case GameDifficulty.HARD:
                         return difficultyButton(
-                            context, entry.key, entry.value, redGgBtn);
+                            context, entry.key, entry.value, pinkBtn);
                     }
                   }).toList()),
             ),
@@ -70,7 +71,10 @@ class _AttentionGame2MenuState extends State<AttentionGame2Menu> {
           },
           child: Text(
             tag.toString(),
-            style: TextStyle(fontSize: 25),
+            style: TextStyle(
+              fontSize: 25,
+              color: darkTextColor,
+            ),
           ),
         ));
   }

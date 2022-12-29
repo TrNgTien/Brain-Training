@@ -27,7 +27,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  dynamic dataUser;
+
+  MyHomePage({super.key, required this.title, required this.dataUser});
   final String title;
 
   @override
@@ -37,6 +39,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
   List<Widget> widgetOptions = [MainMenu(), RankingScreen(), ProfileScreen()];
+
   void _onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
@@ -47,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(widget.title),
         backgroundColor: primaryOrange,
         automaticallyImplyLeading: false,

@@ -129,6 +129,7 @@ class _MathGameState extends State<MathGame> {
     final seconds = myDuration.inSeconds;
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Chọn số nhỏ hơn'),
       ),
       body: SingleChildScrollView(

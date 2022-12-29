@@ -226,6 +226,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Lần chơi " + trial.toString()),
+          centerTitle: true,
           backgroundColor: greenPastel,
           foregroundColor: darkTextColor,
         ),

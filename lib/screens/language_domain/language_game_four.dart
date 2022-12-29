@@ -223,6 +223,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text("Sắp xếp chữ cái"),
       ),
       body: SingleChildScrollView(

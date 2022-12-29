@@ -1,12 +1,13 @@
 import 'dart:convert' show json;
-import 'package:brain_training/screens/auth/register_screen.dart';
 import 'package:brain_training/widget/logo_app.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/main.dart';
 import "package:brain_training/constants/icons.dart";
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,15 +16,36 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  @override
-  void initState() {
-    super.initState();
+  dynamic currentUser;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: <String>[
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+
+  Future<void> _handleSignIn() async {
+    try {
+      dynamic dataUser = await _googleSignIn.signIn();
+      setState(() {
+        currentUser = dataUser;
+      });
+      Navigator.of(context).pushReplacement(CupertinoPageRoute(
+          builder: (ctx) => MyHomePage(
+                title: "Brain Training",
+                dataUser: dataUser,
+              ),
+          fullscreenDialog: true));
+    } catch (error) {
+      print(error);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           elevation: 0,
           backgroundColor: primaryBackground,
         ),
@@ -44,54 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const MyHomePage(
-                                    title: "Brain Training",
-                                  ),
-                              fullscreenDialog: true));
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: blueFbBtn,
-                            boxShadow: const [
-                              BoxShadow(color: blueFbBtn, spreadRadius: 10),
-                            ],
-                          ),
-                          height: 50,
-                          width: 250,
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            SvgPicture.asset(
-                              facebookIcon,
-                              height: 30,
-                              width: 30,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            const Text(
-                              "Tài khoản Facebook",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ]),
-                        )),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const MyHomePage(
-                                    title: "Brain Training",
-                                  ),
-                              fullscreenDialog: true));
+                          _handleSignIn();
                         },
                         child: Container(
                           margin: const EdgeInsets.only(top: 40, bottom: 50),
@@ -104,63 +79,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           height: 50,
                           width: 250,
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            SvgPicture.asset(
-                              googleIcon,
-                              height: 30,
-                              width: 30,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            const Text(
-                              "Tài khoản Google",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ]),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  googleIcon,
+                                  height: 30,
+                                  width: 30,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                const Text(
+                                  "Tài khoản Google",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ]),
                         )),
                   ],
                 ),
-                Column(
-                  children: [
-                    const Text(
-                      "Nếu bạn chưa có tài khoản?",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontStyle: FontStyle.italic,
-                        color: darkTextColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const RegisterScreen(),
-                              fullscreenDialog: true));
-                        },
-                        child: const Text(
-                          "Tạo tài khoản",
-                          style: TextStyle(
-                            fontSize: 20,
-                            decoration: TextDecoration.underline,
-                            color: primaryOrange,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                )
               ]),
         )));
   }

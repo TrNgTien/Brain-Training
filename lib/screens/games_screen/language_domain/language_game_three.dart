@@ -148,6 +148,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trò chơi nối chữ'),
+        centerTitle: true,
         backgroundColor: primaryOrange,
       ),
       body: SingleChildScrollView(

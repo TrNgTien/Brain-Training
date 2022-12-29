@@ -216,6 +216,7 @@ class _AttentionGame2State extends State<AttentionGame2> {
       appBar: AppBar(
         backgroundColor: themeColor,
         centerTitle: true,
+        foregroundColor: darkTextColor,
         title: Text('Độ khó: $titleOfDiff'),
       ),
       floatingActionButton: isStop

@@ -348,6 +348,7 @@ class _AttentionGameOneState extends State<AttentionGameOne> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Tổng thời gian còn lại: $totalSeconds"),
+          centerTitle: true,
           backgroundColor: greenBtn,
           titleTextStyle: const TextStyle(
             color: darkTextColor,

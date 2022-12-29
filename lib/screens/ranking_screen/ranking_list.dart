@@ -12,6 +12,7 @@ class RankingList extends StatelessWidget {
         appBar: AppBar(
           title: Text("Bảng xếp hạng"),
           backgroundColor: primaryOrange,
+          centerTitle: true,
           titleTextStyle: const TextStyle(
             color: Colors.white,
             fontSize: 20,
