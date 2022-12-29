@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "373795222692",
+    "project_id": "braintraining-d57a5",
+    "storage_bucket": "braintraining-d57a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373795222692:android:43486fba5b765e7250a231",
+        "android_client_info": {
+          "package_name": "com.example.mobile_proj"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "373795222692-ram1hibhu9ivbm35qe0rpl957p109nf5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mobile_proj",
+            "certificate_hash": "7453829242bb339ec2ba8e8be169a65077e4162f"
+          }
+        },
+        {
+          "client_id": "373795222692-uf3vg9tn83ihupbnn841nv2mkb17rp6d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjDncf07bGBYJ3QW0KWAzJ_Xi_fnSjszM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "373795222692-uf3vg9tn83ihupbnn841nv2mkb17rp6d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
