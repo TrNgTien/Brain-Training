@@ -26,6 +26,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
   List<String> selectedCards = [""]; // User's selection
 
   int point = 0;
+  int bonusPoint = 0;
   int trial = 1;
   int level = 0;
   bool endGame = false;
@@ -151,11 +152,51 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
         endGame = true;
       });
 
-      dialog.show(Text("kết thúc"), Text("Tổng điểm: $point"), [
-        TextButton(
-            child: const Text('Xác nhận'),
-            onPressed: () => Navigator.of(context).pop())
-      ]);
+      dialog.show(
+          Text("Kết Thúc",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600)),
+          SingleChildScrollView(
+              child: ListBody(children: <Widget>[
+            Text(
+              "Điểm: $point",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              "Điểm thưởng: ${bonusPoint}",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              "Tổng điểm: ${point + bonusPoint}",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.w500),
+            )
+          ])),
+          [
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(left: 50, right: 50),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                color: orangePastel,
+              ),
+              child: TextButton(
+                child: const Text('Chơi lại',
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  restartGame();
+                },
+              ),
+            )
+          ]);
       return;
     }
     nextTrial();
@@ -165,7 +206,7 @@ class _MemoryGameTwoState extends State<MemoryGameTwo> {
     int weight = 100 * trial;
 
     setState(() {
-      point += ((selectedCards.length - 1) * weight);
+      bonusPoint += ((selectedCards.length - 1) * weight);
     });
   }
 
