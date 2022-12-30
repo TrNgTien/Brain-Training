@@ -94,9 +94,11 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
   // Click Handler
   void handleClickCheck() {
-    changeStatus(GameStatus.checking);
-
     checkAnswer();
+
+    _currentQuestion >= _wordsList.length - 1
+        ? changeStatus(GameStatus.end)
+        : changeStatus(GameStatus.checking);
   }
 
   void handleClickNext() {
@@ -171,14 +173,28 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
   void showEndGameDialog() {
     dialog.show(
-        Text("Kết thúc"),
+        Text("Kết Thúc",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.red, fontSize: 40, fontWeight: FontWeight.w600)),
         SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              Text("Điểm: $_point"),
-              Text("Điểm thưởng: $_bonusPoint"),
-              Text("Thời gian trả lời: $_responseTime giây"),
-              Text("Tổng điểm: ${_point + _bonusPoint}"),
+              Text("Điểm: $_point",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 5),
+              Text("Điểm thưởng: $_bonusPoint",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 5),
+              Text("Thời gian trả lời: $_responseTime giây",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 5),
+              Text("Tổng điểm: ${_point + _bonusPoint}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
             ],
           ),
         ),
@@ -246,7 +262,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
       appBar: AppBar(
         backgroundColor: yellowPastel,
         foregroundColor: darkTextColor,
-        title: Text("Màn ${_currentQuestion + 2}"),
+        title: Text("Màn ${_currentQuestion + 1}"),
       ),
       body: SingleChildScrollView(
         child: Center(
