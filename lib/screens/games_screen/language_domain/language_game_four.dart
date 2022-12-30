@@ -326,21 +326,22 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
           const SizedBox(
             height: 24,
           ),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromRGBO(180, 211, 161, 1)),
-              onPressed:
-                  (!_answerWord.contains("") && _status == GameStatus.playing)
+          _status == GameStatus.playing
+              ? ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromRGBO(180, 211, 161, 1)),
+                  onPressed: !_answerWord.contains("")
                       ? () => handleClickCheck()
                       : null,
-              child: const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text("Kiểm tra",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: darkTextColor,
-                        fontWeight: FontWeight.w600)),
-              ))
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text("Kiểm tra",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: darkTextColor,
+                            fontWeight: FontWeight.w600)),
+                  ))
+              : Container()
         ])),
       ),
       floatingActionButton: _currentQuestion < _wordsList.length - 1 &&
