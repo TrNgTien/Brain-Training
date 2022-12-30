@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:brain_training/constants/enum.dart';
+import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/utils/helper.dart';
+import 'package:brain_training/widget/clock.dart';
 import 'package:brain_training/utils/custom_dialog.dart';
 
 class LanguageGameFour extends StatefulWidget {
@@ -92,9 +94,11 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
   // Click Handler
   void handleClickCheck() {
-    changeStatus(GameStatus.checking);
-
     checkAnswer();
+
+    _currentQuestion >= _wordsList.length - 1
+        ? changeStatus(GameStatus.end)
+        : changeStatus(GameStatus.checking);
   }
 
   void handleClickNext() {
@@ -169,14 +173,28 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
   void showEndGameDialog() {
     dialog.show(
-        Text("Kết thúc"),
+        Text("Kết Thúc",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.red, fontSize: 40, fontWeight: FontWeight.w600)),
         SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              Text("Điểm: $_point"),
-              Text("Điểm thưởng: $_bonusPoint"),
-              Text("Thời gian trả lời: $_responseTime giây"),
-              Text("Tổng điểm: ${_point + _bonusPoint}"),
+              Text("Điểm: $_point",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 5),
+              Text("Điểm thưởng: $_bonusPoint",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 5),
+              Text("Thời gian trả lời: $_responseTime giây",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 5),
+              Text("Tổng điểm: ${_point + _bonusPoint}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
             ],
           ),
         ),
@@ -242,25 +260,33 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sắp xếp chữ cái"),
+        backgroundColor: yellowPastel,
+        foregroundColor: darkTextColor,
+        title: Text("Màn ${_currentQuestion + 1}"),
       ),
       body: SingleChildScrollView(
         child: Center(
             child: Column(children: [
-          Text(
-            '$seconds',
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 50),
+          Padding(
+            padding: const EdgeInsets.only(top: 15, bottom: 10),
+            child: Text(
+              "Điểm: $_point",
+              style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: primaryOrange,
+                  fontSize: 35),
+            ),
           ),
-          Text(
-            "Điểm: $_point",
-            style: const TextStyle(fontSize: 30, color: Colors.red),
-          ),
+          Clock(seconds: seconds),
           const SizedBox(
             height: 30,
           ),
           const Text("Hãy sắp xếp các chữ cái để tạo thành một từ",
-              textAlign: TextAlign.center, style: TextStyle(fontSize: 25)),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: darkTextColor)),
           const SizedBox(
             height: 30,
           ),
@@ -272,7 +298,10 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
           ),
           const Text(
             "Trả lời:",
-            style: TextStyle(fontSize: 26),
+            style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: darkTextColor),
           ),
           _answerWord.isEmpty
               ? Container()
@@ -284,32 +313,46 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
                     height: 30,
                   ),
                   const Text(
-                    "Đáp án",
-                    style: TextStyle(fontSize: 26),
+                    "Đáp án:",
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: darkTextColor),
                   ),
                   _solutionWord.isEmpty
                       ? Container()
                       : wordButtonWidget(_solutionWord, ButtonType.solution),
                 ]),
           const SizedBox(
-            height: 20,
+            height: 24,
           ),
-          ElevatedButton(
-            onPressed:
-                (!_answerWord.contains("") && _status == GameStatus.playing)
-                    ? () => handleClickCheck()
-                    : null,
-            child: const Text("Kiểm tra", style: TextStyle(fontSize: 24)),
-          )
+          _status == GameStatus.playing
+              ? ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromRGBO(180, 211, 161, 1)),
+                  onPressed: !_answerWord.contains("")
+                      ? () => handleClickCheck()
+                      : null,
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text("Kiểm tra",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: darkTextColor,
+                            fontWeight: FontWeight.w600)),
+                  ))
+              : Container()
         ])),
       ),
-      floatingActionButton: _currentQuestion < _wordsList.length - 1
+      floatingActionButton: _currentQuestion < _wordsList.length - 1 &&
+              _status == GameStatus.checking
           ? FloatingActionButton.extended(
-              onPressed: _status == GameStatus.checking
-                  ? () => handleClickNext()
-                  : null,
-              icon: const Icon(Icons.navigate_next),
-              label: Text("Bài tập ${_currentQuestion + 2}"),
+              backgroundColor: Color.fromRGBO(246, 204, 131, 1),
+              onPressed: () => handleClickNext(),
+              icon: const Icon(Icons.navigate_next, color: darkTextColor),
+              label: Text("Màn kế tiếp",
+                  style: TextStyle(
+                      color: darkTextColor, fontWeight: FontWeight.w800)),
             )
           : null,
     );
@@ -333,7 +376,10 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   }
 
   Expanded questionWidget(int index, String char) {
-    return wordWidget(char, onPressedCallback: () {
+    return wordWidget(char,
+        buttonStyle: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromRGBO(250, 173, 140, 1)),
+        textStyle: TextStyle(color: darkTextColor), onPressedCallback: () {
       selectAnswer(char, index);
     });
   }
@@ -341,27 +387,44 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   // Handle logic for answer button's style
   ButtonStyle? getAnswerBtnStyle() {
     if (_status == GameStatus.playing) {
-      return null;
+      return ElevatedButton.styleFrom(
+          backgroundColor: Color.fromRGBO(250, 173, 140, 1));
     } else if (_isCorrect) {
-      return ElevatedButton.styleFrom(backgroundColor: Colors.green);
+      return ElevatedButton.styleFrom(
+          backgroundColor: Color.fromRGBO(180, 211, 161, 1));
     }
-    return ElevatedButton.styleFrom(backgroundColor: Colors.red);
+    return ElevatedButton.styleFrom(
+        backgroundColor: Color.fromRGBO(234, 67, 53, 1));
+  }
+
+  TextStyle? getAnswerTextStyle() {
+    if (_status == GameStatus.playing) {
+      return TextStyle(color: darkTextColor);
+    } else if (_isCorrect) {
+      return TextStyle(color: darkTextColor);
+    }
+    return TextStyle(color: Colors.white);
   }
 
   Expanded answerWidget(int index, String char) {
-    return wordWidget(char, buttonStyle: getAnswerBtnStyle(),
-        onPressedCallback: () {
+    return wordWidget(char,
+        textStyle: getAnswerTextStyle(),
+        buttonStyle: getAnswerBtnStyle(), onPressedCallback: () {
       deleteAnswer(char, index);
     });
   }
 
   Expanded solutionWidget(int index, String char) {
     return wordWidget(char,
-        buttonStyle: ElevatedButton.styleFrom(backgroundColor: Colors.green));
+        textStyle: TextStyle(color: darkTextColor),
+        buttonStyle: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromRGBO(180, 211, 161, 1)));
   }
 
   Expanded wordWidget(String char,
-      {ButtonStyle? buttonStyle, Function? onPressedCallback}) {
+      {ButtonStyle? buttonStyle,
+      TextStyle? textStyle,
+      Function? onPressedCallback}) {
     return Expanded(
         child: Container(
             margin: const EdgeInsets.all(4),
@@ -375,6 +438,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
                   if (char == "") return;
                   onPressedCallback!();
                 },
-                child: Text(char, style: const TextStyle(fontSize: 30)))));
+                child: Text(char,
+                    style: const TextStyle(fontSize: 30).merge(textStyle)))));
   }
 }
