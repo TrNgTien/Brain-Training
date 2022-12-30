@@ -24,6 +24,7 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
   Duration questionDuration = const Duration();
   Timer? countdownTimer;
 
+  List totalWords = [];
   List _wordsList = [];
   List<String> _questionWord = [];
   List<String> _answerWord = [];
@@ -171,6 +172,25 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
     }
   }
 
+  void restartGame() {
+    // Shuffle the questions list
+    totalWords.shuffle();
+    setState(() {
+      _wordsList = totalWords.sublist(0, numberOfQuestions);
+
+      _currentAnswerPosition = 0;
+      _currentQuestion = 0;
+      _isCorrect = false;
+
+      _point = 0;
+      _bonusPoint = 0;
+      _responseTime = 0;
+      _status = GameStatus.playing;
+    });
+
+    updateSession();
+  }
+
   void showEndGameDialog() {
     dialog.show(
         Text("Kết Thúc",
@@ -199,10 +219,22 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
           ),
         ),
         [
-          TextButton(
-            child: const Text('Xác nhận'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.only(left: 50, right: 50),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              color: orangePastel,
+            ),
+            child: TextButton(
+              child: const Text("Chơi lại",
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                restartGame();
+              },
+            ),
+          )
         ]);
   }
 
@@ -238,10 +270,11 @@ class _LanguageGameFourState extends State<LanguageGameFour> {
     super.initState();
     dialog = CustomDialog(context: context);
     readJson(languageGameFourPath, jsonKey).then((wordsList) {
+      totalWords = wordsList;
       // Shuffle the questions list
-      wordsList.shuffle();
+      totalWords.shuffle();
       setState(() {
-        _wordsList = wordsList.sublist(0, numberOfQuestions);
+        _wordsList = totalWords.sublist(0, numberOfQuestions);
       });
 
       updateSession();
