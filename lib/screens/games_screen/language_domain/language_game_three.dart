@@ -8,6 +8,7 @@ import 'package:brain_training/constants/base_url.dart';
 import 'package:brain_training/constants/color.dart';
 import 'package:brain_training/utils/toast.dart';
 import 'package:brain_training/utils/custom_dialog.dart';
+import 'package:brain_training/widget/clock.dart';
 
 class LanguageGameThree extends StatefulWidget {
   const LanguageGameThree({super.key});
@@ -27,10 +28,11 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
   TextEditingController controller = TextEditingController();
   late Future<String> firstCharacter;
-  final List<String> _answer = [];
+  List<String> _answer = [];
   int _point = 0;
   GameStatus _status = GameStatus.playing;
 
+  List<String> dataList = [];
   // Timer Handler
   void startTimer() {
     answerDuration = Duration(seconds: answerDurationInSeconds);
@@ -60,7 +62,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
   Future<String> fetchRandomCharacter() async {
     final response = await http.get(dictionaryUrl);
     final data = response.body;
-    List<String> dataList = data.toLowerCase().split('\n');
+    dataList = data.toLowerCase().split('\n');
 
     if (dataList.isNotEmpty) {
       String firstCharacter =
@@ -90,7 +92,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
     bool isValidWord = await checkValidWord(checkingWord);
     if (isValidWord) {
-      toast.show('Chính xác', Colors.green);
+      toast.show('Chính xác', Color.fromRGBO(107, 174, 68, 1));
       _answer.add(userAnswer);
       setState(() {
         _point += pointPerCorrectAnswer;
@@ -98,7 +100,7 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
         answerDuration = Duration(seconds: answerDurationInSeconds);
       });
     } else {
-      toast.show('Không hợp lệ', Colors.red);
+      toast.show('Sai rồi!', Color.fromRGBO(234, 67, 53, 1));
     }
 
     controller.text = '';
@@ -112,16 +114,51 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
     });
   }
 
+  void restartGame() {
+    _answer = [];
+    _answer.add(dataList[Random().nextInt(dataList.length)].split(' ')[0]);
+    controller.text = '';
+    setState(() {
+      _point = 0;
+      _status = GameStatus.playing;
+    });
+    startTimer();
+  }
+
   void handleStatusChange(GameStatus status) {
     if (status == GameStatus.end) {
-      dialog.show(Text('Kết thúc'), Text('Tổng điểm: $_point'), [
-        TextButton(
-          child: const Text('Xác nhận'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        )
-      ]);
+      dialog.show(
+          Text("Kết Thúc",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600)),
+          SingleChildScrollView(
+              child: ListBody(children: <Widget>[
+            Text("Tổng điểm: $_point",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500)),
+            const SizedBox(height: 5),
+          ])),
+          [
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(left: 50, right: 50),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                color: orangePastel,
+              ),
+              child: TextButton(
+                child: const Text("Chơi lại",
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  restartGame();
+                },
+              ),
+            )
+          ]);
     }
   }
 
@@ -147,8 +184,12 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trò chơi nối chữ'),
-        backgroundColor: primaryOrange,
+        foregroundColor: Color.fromRGBO(89, 70, 61, 1),
+        title: const Text(
+          'Trò chơi nối chữ',
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
+        backgroundColor: Color.fromRGBO(251, 222, 172, 1),
       ),
       body: SingleChildScrollView(
           child: FutureBuilder<String>(
@@ -156,37 +197,49 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(children: [
-              Text(
-                '$seconds',
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 50),
+              Padding(
+                padding: const EdgeInsets.only(top: 25, bottom: 15),
+                child: Text(
+                  "Điểm: $_point",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: primaryOrange,
+                      fontSize: 35),
+                ),
               ),
-              Text(
-                'Điểm: $_point',
-                style: const TextStyle(fontSize: 30, color: Colors.red),
-              ),
+              Clock(seconds: seconds),
               const SizedBox(
-                height: 30,
+                height: 34,
               ),
-              const Text('Hãy điền tiếng tiếp theo để tạo nên một từ có nghĩa',
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 25)),
+              const Text(
+                  'Hãy điền tiếng tiếp theo để tạo nên một cụm từ có nghĩa',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700,
+                      color: darkTextColor)),
               const SizedBox(
                 height: 60,
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 Container(
-                    color: primaryOrange,
                     width: 180,
                     height: 120,
+                    decoration: const BoxDecoration(
+                        color: Color.fromRGBO(246, 204, 131, 1),
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
                     alignment: Alignment.center,
                     child: Text(_answer.last,
                         style: const TextStyle(
-                            fontSize: 30, color: Colors.white))),
+                            fontSize: 34,
+                            color: Color.fromRGBO(89, 70, 61, 1),
+                            fontWeight: FontWeight.w700))),
                 Container(
                     decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black, width: 2)),
+                        color: Color.fromRGBO(251, 222, 172, 1),
+                        border: Border.all(
+                            color: Color.fromRGBO(247, 202, 22, 1), width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
                     width: 180,
                     height: 120,
                     alignment: Alignment.center,
@@ -194,29 +247,41 @@ class _LanguageGameThreeState extends State<LanguageGameThree> {
                       enabled: _status == GameStatus.playing,
                       controller: controller,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 30),
+                      style: const TextStyle(
+                          fontSize: 34,
+                          color: Color.fromRGBO(89, 70, 61, 1),
+                          fontWeight: FontWeight.w500),
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                         border: InputBorder.none,
-                        hintText: 'Nhập từ',
+                        hintText: 'nhập từ',
+                        hintStyle: TextStyle(
+                            fontSize: 34,
+                            color: Color.fromRGBO(89, 70, 61, 0.62),
+                            fontWeight: FontWeight.w400),
                       ),
                     ))
               ]),
               const SizedBox(
                 height: 120,
               ),
-              ElevatedButton(
-                onPressed:
-                    controller.text.isNotEmpty && _status == GameStatus.playing
-                        ? () => handleClickCheck()
-                        : null,
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryOrange,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 14),
-                    textStyle: const TextStyle(fontSize: 24)),
-                child: const Text('Kiểm tra'),
-              )
+              _status == GameStatus.playing
+                  ? ElevatedButton(
+                      onPressed: controller.text.isNotEmpty
+                          ? () => handleClickCheck()
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromRGBO(180, 211, 161, 1),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                          textStyle: const TextStyle(fontSize: 24)),
+                      child: const Text('Kiểm tra',
+                          style: TextStyle(
+                              fontSize: 22,
+                              color: Color.fromRGBO(89, 70, 61, 1),
+                              fontWeight: FontWeight.w600)),
+                    )
+                  : Container()
             ]);
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
