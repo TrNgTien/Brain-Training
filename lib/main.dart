@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:brain_training/widget/bottom_nav.dart';
 import 'package:brain_training/widget/splash_screen.dart';
 import 'package:brain_training/constants/color.dart';
+import 'package:dcdg/dcdg.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,0 +1,26 @@
+@startuml classdiagram
+class "brain_training::widget::logo_app.dart::LogoApp" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "brain_training::widget::logo_app.dart::LogoApp"
+
+class "brain_training::widget::grid_game.dart::GridGame" {
+  +dynamic context
+  +String typeView
+  +List<String> listDomain
+  +Widget build()
+  +GridView gridDomain()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "brain_training::widget::grid_game.dart::GridGame"
+
+class "brain_training::widget::clock.dart::Clock" {
+  +int seconds
+  +Widget clockTimer()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "brain_training::widget::clock.dart::Clock"
+
+@enduml

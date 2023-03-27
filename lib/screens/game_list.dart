@@ -1,6 +1,7 @@
 import 'package:brain_training/screens/games_screen/attention_domain/menu_attention_game_two.dart';
 import 'package:brain_training/screens/games_screen/language_domain/language_game_two.dart';
 import 'package:flutter/material.dart';
+import 'package:brain_training/screens/games_screen/attention_domain/attention_game_one.dart';
 import 'package:brain_training/screens/games_screen/math_domain/math_game_2.dart';
 import 'package:brain_training/screens/games_screen/math_domain/math_game_one.dart';
 import 'package:brain_training/screens/games_screen/memory_domain/memory_game_1.dart';
@@ -105,7 +106,7 @@ class _GameListState extends State<GameList> {
               foregroundColor: darkTextColor,
               backgroundColor: greenBtn,
               textStyle: const TextStyle(
-                fontSize: 20,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -117,13 +118,13 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Tìm từ hợp lệ"),
             )),
-        const SizedBox(height: 20),
+        const SizedBox(height: 50),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
               backgroundColor: redGgBtn,
               textStyle: const TextStyle(
-                fontSize: 20,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -135,13 +136,13 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Tìm cụm từ hợp lệ"),
             )),
-        const SizedBox(height: 20),
+        const SizedBox(height: 50),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
               backgroundColor: pinkBtn,
               textStyle: const TextStyle(
-                fontSize: 20,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -154,13 +155,13 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.all(20.0),
               child: Text("Nối từ thích hợp"),
             )),
-        const SizedBox(height: 20),
+        const SizedBox(height: 50),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: darkTextColor,
               backgroundColor: yellowBtn,
               textStyle: const TextStyle(
-                fontSize: 20,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -193,7 +194,8 @@ class _GameListState extends State<GameList> {
               ),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => const MathGame()));
+                    builder: (BuildContext context) =>
+                        MathGame(title: "Tìm số nhỏ hơn")));
               },
               child: const Padding(
                 padding: EdgeInsets.all(20.0),
@@ -207,7 +209,7 @@ class _GameListState extends State<GameList> {
                 foregroundColor: darkTextColor,
                 backgroundColor: yellowBtn,
                 textStyle: const TextStyle(
-                  fontSize: 30,
+                  fontSize: 25,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -256,7 +258,7 @@ class _GameListState extends State<GameList> {
               foregroundColor: darkTextColor,
               backgroundColor: yellowBtn,
               textStyle: const TextStyle(
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -267,7 +269,7 @@ class _GameListState extends State<GameList> {
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "mem 2",
+                "Chọn hình ảnh mới",
               ),
             )),
         const SizedBox(height: 50),
@@ -276,7 +278,7 @@ class _GameListState extends State<GameList> {
               foregroundColor: darkTextColor,
               backgroundColor: orangePastel,
               textStyle: const TextStyle(
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -307,11 +309,14 @@ class _GameListState extends State<GameList> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => AttentionGameOne()));
+            },
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "attentionList 1",
+                "Tìm hình theo yêu cầu",
               ),
             )),
         const SizedBox(height: 50),
@@ -329,7 +334,7 @@ class _GameListState extends State<GameList> {
                   builder: (BuildContext context) => AttentionGame2Menu()));
             },
             child: const Padding(
-              padding: EdgeInsets.all(15.0),
+              padding: EdgeInsets.all(20.0),
               child: Text(
                 "Chọn hình giống nhau",
               ),
